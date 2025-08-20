@@ -1,1 +1,1 @@
-# lb.xyz
+# Weighly

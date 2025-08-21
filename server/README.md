@@ -1,6 +1,6 @@
 # Weighly Backend API Documentation
 
-## API Version: 1.0
+## API Version: 0.1
 
 ### GET /weights
 

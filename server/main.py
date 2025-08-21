@@ -38,13 +38,10 @@ except (sqlite3.OperationalError, FileNotFoundError) as e:
 
 
 @app.get("/weights", response_model=List[Weight])
-def read_weights():
-    # conn = sqlite3.connect("food_weights.db")
+def read_weights(group: str):
+    conn = sqlite3.connect(db_file)
     c = conn.cursor()
-
-    c.execute("SELECT * FROM weights")
+    c.execute("SELECT id, name, weight FROM weights WHERE group_id = ?", (group,))
     rows = c.fetchall()
-
     conn.close()
-
     return [Weight(id=row[0], name=row[1], weight=row[2]) for row in rows]

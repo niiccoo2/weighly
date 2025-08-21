@@ -2,14 +2,15 @@
 
 ## API Version: 0.1
 
-### GET /weights
+### GET /weights/{group}
 
 #### Description
 This endpoint retrieves a list of weight entries.
 
 #### Request
 - **Method**: GET
-- **Endpoint**: `/weights`
+- **Endpoint**: `/weights/{group}`
+- **Example**: `/weights/troop30`
 
 #### Response
 - **Status Code**: 200 OK

@@ -1,23 +1,24 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
-
+  
   let leaderboard: any[] = [];
   let kg_mode: string = "lbs"
   let op_kg_mode: string = "kgs"
   $: kgMode = $page.url.searchParams.has('kgs');
 
-  onMount(async () => {
+  $: (async () => {
     if (kgMode) {
       const module = await import('../example-kg.json');
       leaderboard = module.default;
-	  kg_mode = "kgs"
-	  op_kg_mode = "lbs"
+      kg_mode = "kgs";
+      op_kg_mode = "lbs";
     } else {
       const module = await import('../example.json');
       leaderboard = module.default;
+      kg_mode = "lbs";
+      op_kg_mode = "kgs";
     }
-  });
+  })();
 </script>
 
 <style>

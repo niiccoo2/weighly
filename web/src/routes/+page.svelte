@@ -8,10 +8,14 @@
 
   $: (async () => {
     if (kgMode) {
-      const module = await import('../example-kg.json');
-      leaderboard = module.default;
-      kg_mode = "kgs";
-      op_kg_mode = "lbs";
+	  const module = await import('../example.json');
+	  leaderboard = module.default;
+	  leaderboard = leaderboard.map(item => ({
+		...item,
+		score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
+	  }));
+	  kg_mode = "kgs";
+	  op_kg_mode = "lbs";
     } else {
       const module = await import('../example.json');
       leaderboard = module.default;

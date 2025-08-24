@@ -1,4 +1,4 @@
-import serial
+import serial # pip install pyserial
 from random import randint
 
 def get_serial(serialport, buadrate, stringToSend):

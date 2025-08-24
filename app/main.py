@@ -1,10 +1,9 @@
 import tkinter as tk
-import datetime
 import customtkinter
-from CTkMessagebox import CTkMessagebox
 from scale_utils import get_serial, get_serial_dummy
+from database_utils import write_to_file
 
-use_dummy_scale = False # Remove this once the ability to enter weight is added
+use_dummy_scale = True # Remove this once the ability to enter weight is added
 
 if use_dummy_scale:
     get_serial = get_serial_dummy
@@ -36,8 +35,8 @@ ctk.rowconfigure(5, weight=1)
 
 scout = tk.StringVar(ctk)
 weight_to_display = tk.StringVar(ctk)
-ScoutType = tk.StringVar(ctk)
-ScoutType.set("Scout")
+person_type = tk.StringVar(ctk)
+person_type.set("Scout")
 Bigtotal = tk.StringVar(ctk)
 with open(FILENAME, "r") as file:
     file=file.read().split(",")
@@ -45,32 +44,6 @@ with open(FILENAME, "r") as file:
         Bigtotal.set(str(file[-3]))
     except:
         Bigtotal.set("0")
-
-
-# Write donation data to a file
-def write_to_file():
-    ScoutName = scout.get().strip().title()
-    ScoutTypeDisplay = ScoutType.get().strip()
-    weight_to_file = weight_to_display.get().rstrip(" lbs.")
-
-    if ScoutName != "":
-        with open(FILENAME, "a") as hs:
-            ct = datetime.datetime.now()
-            bt = float(Bigtotal.get())
-            bt = round(bt + float(weight_to_file), 2)
-            Bigtotal.set(str(bt))
-
-            hs.write(f"{ScoutName},{ScoutTypeDisplay},{weight_to_file},lbs,{bt},lbs,{ct}\n")
-
-        CTkMessagebox(
-            title="Saved", message=f"{ScoutName}, thank you for your {weight_to_file} lbs. donation!"
-        )
-    else:
-        CTkMessagebox(
-            title="Error",
-            message=f"Please Name The {ScoutTypeDisplay}",
-            icon="cancel",
-        )
 
 
 # Tare function placeholder
@@ -84,7 +57,7 @@ def Tare_The_Scale():
 
 # Buttons and labels
 btnSaveToFile = customtkinter.CTkButton(
-    ctk, text="Save To File", font=("Helvetica", 60), command=write_to_file
+    ctk, text="Save To File", font=("Helvetica", 60), command=lambda: write_to_file(FILENAME, scout, person_type, weight_to_display, Bigtotal)
 )
 btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
@@ -111,17 +84,17 @@ NameEntry = customtkinter.CTkEntry(
 NameEntry.grid(row=4, column=1, columnspan=1, rowspan=3)
 
 r1 = customtkinter.CTkRadioButton(
-    ctk, text="Scout", font=("Helvetica", 20), value="Scout", variable=ScoutType
+    ctk, text="Scout", font=("Helvetica", 20), value="Scout", variable=person_type
 )
 r1.grid(row=3, column=0, rowspan=1)
 
 r2 = customtkinter.CTkRadioButton(
-    ctk, text="Webelo", font=("Helvetica", 20), value="Webelo", variable=ScoutType
+    ctk, text="Webelo", font=("Helvetica", 20), value="Webelo", variable=person_type
 )
 r2.grid(row=4, column=0, rowspan=1)
 
 r3 = customtkinter.CTkRadioButton(
-    ctk, text="Other", font=("Helvetica", 20), value="Other", variable=ScoutType
+    ctk, text="Other", font=("Helvetica", 20), value="Other", variable=person_type
 )
 r3.grid(row=5, column=0, rowspan=1)
 

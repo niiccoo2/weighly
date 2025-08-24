@@ -4,7 +4,6 @@ import datetime
 import customtkinter
 from CTkMessagebox import CTkMessagebox 
 import serial
-from PIL import Image
 
 
 #SERIALPORT = "/dev/ttyUSB0"  #Real Sparfun Open Scale
@@ -12,14 +11,10 @@ from PIL import Image
 
 BAUDRATE = 9600
 
-filename="./Food_Pantry_Donations.csv"
+filename="./weighly_backup.csv"
 #ser = serial.Serial(SERIALPORT, BAUDRATE, timeout =1) #Real scale
 
 open(filename, "a")
-
-logo = customtkinter.CTkImage(light_image=Image.open("./Boy_Scouts_of_America_corporate_trademark.png"),
-                                  dark_image=Image.open("./Boy_Scouts_of_America_corporate_trademark.png"),
-                                  size=(150, 150))
 
 root = customtkinter.CTk()
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
@@ -188,9 +183,6 @@ r3 = customtkinter.CTkRadioButton(
 )
 r3.grid(row=5, column=0, rowspan=1)
 
-image_label = customtkinter.CTkLabel(root, image=logo, text="")  # display image with a CTkLabel
-image_label.grid(row=0, column=0, rowspan=1)
-
 # Adjust font size dynamically without flickering
 current_font_size = 0  # Store the current font size
 
@@ -210,17 +202,15 @@ def adjust_font_size(event=None):
         r2.configure(font=("Helvetica", new_font_size // 2))
         r3.configure(font=("Helvetica", new_font_size // 2))
 
-
-
-# TODO: LINE BELOW MADE IT SO THAT YOU CAN ONLY USE ENTER TO SAVE, FIX IT
-NameEntry.bind("<Return>", write_to_file)
+#NameEntry.bind("<Return>", write_to_file) # This makes it so you can press enter to save the weight, but when uncommented
+                                           # it makes it so you can only save with enter
 
 # Update weight dynamically only if it changes
 last_weight = None  # Store the last weight
 
 def my_mainloop():
     global last_weight
-    weight = get_serial("W")  # Simulated or real weight
+    weight = get_serial("W")
     if weight != last_weight:
         last_weight = weight
         weight_to_display.set(f"{weight} lbs.")

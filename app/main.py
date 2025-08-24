@@ -16,28 +16,28 @@ filename="./weighly_backup.csv"
 
 open(filename, "a")
 
-root = customtkinter.CTk()
+ctk = customtkinter.CTk()
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue", "green", "dark-blue"
-root.geometry('1000x500')
-root.resizable(True, True)
-root.title('Troop 30 Food Drive Weigh Station')
+ctk.geometry('1000x500')
+ctk.resizable(True, True)
+ctk.title('Weighly')
 
-root.columnconfigure(0, weight=1)
-root.columnconfigure(1, weight=1)
-root.columnconfigure(2, weight=1)
-root.rowconfigure(0, weight=1)
-root.rowconfigure(1, weight=1)
-root.rowconfigure(2, weight=1)
-root.rowconfigure(3, weight=1)
-root.rowconfigure(4, weight=1)
-root.rowconfigure(5, weight=1)
+ctk.columnconfigure(0, weight=1)
+ctk.columnconfigure(1, weight=1)
+ctk.columnconfigure(2, weight=1)
+ctk.rowconfigure(0, weight=1)
+ctk.rowconfigure(1, weight=1)
+ctk.rowconfigure(2, weight=1)
+ctk.rowconfigure(3, weight=1)
+ctk.rowconfigure(4, weight=1)
+ctk.rowconfigure(5, weight=1)
 
-scout = tk.StringVar(root)
-weight_to_display = tk.StringVar(root)
-ScoutType = tk.StringVar(root)
+scout = tk.StringVar(ctk)
+weight_to_display = tk.StringVar(ctk)
+ScoutType = tk.StringVar(ctk)
 ScoutType.set("Scout")
-Bigtotal = tk.StringVar(root)
+Bigtotal = tk.StringVar(ctk)
 with open(filename, "r") as file:
     file=file.read().split(",")
     # print(file[-3])
@@ -106,7 +106,7 @@ def get_serial(StringToSend):  # Dummy scale
 
 
 # Write donation data to a file
-def write_to_file(_):
+def write_to_file():
     ScoutName = scout.get().strip().title()
     ScoutTypeDisplay = ScoutType.get().strip()
     weight_to_file = weight_to_display.get().rstrip(" lbs.")
@@ -142,44 +142,44 @@ def Tare_The_Scale():
 
 # Buttons and labels
 btnSaveToFile = customtkinter.CTkButton(
-    root, text="Save To File", font=("Helvetica", 60), command=write_to_file
+    ctk, text="Save To File", font=("Helvetica", 60), command=write_to_file
 )
 btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
 btnTare = customtkinter.CTkButton(
-    root, text="Tare", font=("Helvetica", 20), command=Tare_The_Scale
+    ctk, text="Tare", font=("Helvetica", 20), command=Tare_The_Scale
 )
 btnTare.grid(row=3, column=2, columnspan=1, rowspan=3)
 
 label1 = customtkinter.CTkLabel(
-    root, textvariable=weight_to_display, font=("Helvetica", 200), width=100
+    ctk, textvariable=weight_to_display, font=("Helvetica", 200), width=100
 )
 label1.grid(row=0, column=0, columnspan=3, rowspan=3)
 
-label2 = customtkinter.CTkLabel(root, textvariable=Bigtotal, font=("Helvetica", 60))
+label2 = customtkinter.CTkLabel(ctk, textvariable=Bigtotal, font=("Helvetica", 60))
 label2.grid(row=3, column=2, columnspan=1, rowspan=1)
 
 label3 = customtkinter.CTkLabel(
-    root, text=("200 lbs. maximum on scale."), font=("Helvetica", 40)
+    ctk, text=("200 lbs. maximum on scale."), font=("Helvetica", 40)
 )
 
 NameEntry = customtkinter.CTkEntry(
-    root, textvariable=scout, font=("Helvetica", 60), width=300, height=60
+    ctk, textvariable=scout, font=("Helvetica", 60), width=300, height=60
 )
 NameEntry.grid(row=4, column=1, columnspan=1, rowspan=3)
 
 r1 = customtkinter.CTkRadioButton(
-    root, text="Scout", font=("Helvetica", 20), value="Scout", variable=ScoutType
+    ctk, text="Scout", font=("Helvetica", 20), value="Scout", variable=ScoutType
 )
 r1.grid(row=3, column=0, rowspan=1)
 
 r2 = customtkinter.CTkRadioButton(
-    root, text="Webelo", font=("Helvetica", 20), value="Webelo", variable=ScoutType
+    ctk, text="Webelo", font=("Helvetica", 20), value="Webelo", variable=ScoutType
 )
 r2.grid(row=4, column=0, rowspan=1)
 
 r3 = customtkinter.CTkRadioButton(
-    root, text="Other", font=("Helvetica", 20), value="Other", variable=ScoutType
+    ctk, text="Other", font=("Helvetica", 20), value="Other", variable=ScoutType
 )
 r3.grid(row=5, column=0, rowspan=1)
 
@@ -188,7 +188,7 @@ current_font_size = 0  # Store the current font size
 
 def adjust_font_size(event=None):
     global current_font_size
-    new_font_size = int((root.winfo_width() + root.winfo_height()) // 50)
+    new_font_size = int((ctk.winfo_width() + ctk.winfo_height()) // 50)
 
     if new_font_size != current_font_size:
         current_font_size = new_font_size
@@ -214,10 +214,10 @@ def my_mainloop():
     if weight != last_weight:
         last_weight = weight
         weight_to_display.set(f"{weight} lbs.")
-    root.after(500, my_mainloop)
+    ctk.after(500, my_mainloop)
 
-root.after(500, my_mainloop)
+ctk.after(500, my_mainloop)
 adjust_font_size(0)
-root.bind("<Configure>", adjust_font_size)
+ctk.bind("<Configure>", adjust_font_size)
 
-root.mainloop()
+ctk.mainloop()

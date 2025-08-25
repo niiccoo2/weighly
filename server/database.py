@@ -1,7 +1,8 @@
 import sqlite3
-from models import Weight, Summed_Weight
+from models import Weight, Summed_Weight, Event
 
-DB_FILE = "weighly.db"
+DB_FILE = "weighly.db" # Do not put this in main.py, main needs it to make a new db
+                       # on init so DON'T
 
 def createEmptyDB(name):
     conn = sqlite3.connect(name)
@@ -46,3 +47,21 @@ def get_sums(event: str):
     rows = c.fetchall()
     conn.close()
     return [Summed_Weight(name=row[0], weight=row[1], type=row[2]) for row in rows]
+
+def get_event_info(event: str):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT event_id, name, custom_url
+        FROM events
+        WHERE event_id = ?
+        """, (event,))
+
+    row = c.fetchone()
+    conn.close()
+
+    if row is None:
+        return None
+
+    return Event(event_id=row[0], name=row[1], custom_url=row[2])

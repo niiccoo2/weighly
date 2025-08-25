@@ -12,3 +12,7 @@ def read_weights(event: str):
 @router.get("/{event}/totals", response_model=List[Summed_Weight])
 def read_weights(event: str):
     return get_sums(event)
+
+@router.get("/{event}/summary", response_model=List[Summed_Weight])
+def read_weights(event: str):
+    return get_sums(event)

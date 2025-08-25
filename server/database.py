@@ -1,10 +1,6 @@
 import sqlite3
 from models import Weight, Summed_Weight
-
-db_file = "food_weights.db"
-
-def get_connection():
-    return sqlite3.connect(db_file)
+from main import DB_FILE
 
 def createEmptyDB(name):
     conn = sqlite3.connect(name)
@@ -28,7 +24,7 @@ def createEmptyDB(name):
     conn.close()
 
 def get_entries(event: str):
-    conn = get_connection()
+    conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event,))
     rows = c.fetchall()
@@ -36,7 +32,7 @@ def get_entries(event: str):
     return [Weight(id=row[0], name=row[1], weight=row[2], type=row[3], time=row[4]) for row in rows]
 
 def get_sums(event: str):
-    conn = get_connection()
+    conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute("""
         SELECT name, SUM(weight) AS weight, type

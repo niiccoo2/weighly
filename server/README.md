@@ -2,32 +2,45 @@
 
 ## API Version: 0.1
 
-### GET /weights/{group}
+### GET /{event}/summary
 
 #### Description
 This endpoint retrieves a list of weight entries.
 
 #### Request
 - **Method**: GET
-- **Endpoint**: `/weights/{group}`
-- **Example**: `/weights/troop30`
+- **Endpoint**: `/{event}/summary`
+- **Example**: `/1/summary`
 
 #### Response
 - **Status Code**: 200 OK
 - **Body**:
   ```json
-  [
+  { "event": 
     {
-      "id": 1,
-      "name": "Nico",
-      "weight": 67
+    "event_id": 1,
+    "name":"Troop 30 Food Drive",
+    "custom_url":null 
     },
-    {
-      "id": 2,
-      "name": "Alex",
-      "weight": 75
-    }
-  ]
+    "totals": 
+    [ 
+      {
+        "name":"Nico",
+        "weight":8.0,
+        "type":"scout"
+      },
+      {
+        "name":"Ben",
+        "weight":3.0,
+        "type":"cub"
+      },
+      {
+        "name":"Ben",
+        "weight":3.0,
+        "type":"scout"
+      }
+    ]
+  }
   ```
 
 #### Error Responses

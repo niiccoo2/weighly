@@ -14,7 +14,7 @@ def createEmptyDB(name):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         event_id INTEGER NOT NULL,
         name TEXT NOT NULL,
-        weight INTEGER NOT NULL,
+        weight REAL NOT NULL,
         type TEXT,
         time TEXT NOT NULL
     )

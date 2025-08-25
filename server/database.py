@@ -22,10 +22,10 @@ def createEmptyDB(name):
     conn.commit()
     conn.close()
 
-def get_weights_by_group(group: str):
+def get_weights(group: str):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT id, name, weight FROM weights WHERE group_id = ?", (group,))
+    c.execute("SELECT id, name, weight, type, time FROM weights WHERE group_id = ?", (group,))
     rows = c.fetchall()
     conn.close()
-    return [Weight(id=row[0], name=row[1], weight=row[2]) for row in rows]
+    return [Weight(id=row[0], name=row[1], weight=row[2], type=row[3], time=row[4]) for row in rows]

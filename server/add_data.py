@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("food_weights.db")
+conn = sqlite3.connect("weighly.db")
 c = conn.cursor()
 
 # Adding events:

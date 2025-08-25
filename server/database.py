@@ -31,6 +31,10 @@ def get_entries(event: str):
     c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event,))
     rows = c.fetchall()
     conn.close()
+
+    if rows is None:
+        return None
+
     return [Weight(id=row[0], name=row[1], weight=row[2], type=row[3], time=row[4]) for row in rows]
 
 def get_sums(event: str):
@@ -46,6 +50,10 @@ def get_sums(event: str):
     
     rows = c.fetchall()
     conn.close()
+
+    if rows is None:
+        return None
+
     return [Summed_Weight(name=row[0], weight=row[1], type=row[2]) for row in rows]
 
 def get_event_info(event: str):

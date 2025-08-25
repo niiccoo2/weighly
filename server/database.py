@@ -12,7 +12,7 @@ def createEmptyDB(name):
     c.execute("""
     CREATE TABLE IF NOT EXISTS weights (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        event_id TEXT NOT NULL,
+        event_id INTEGER NOT NULL,
         name TEXT NOT NULL,
         weight INTEGER NOT NULL,
         type TEXT,

@@ -6,3 +6,8 @@ class Weight(BaseModel):
     weight: float
     type: str
     time: str
+
+class Summed_Weight(BaseModel):
+    name: str
+    weight: float
+    type: str

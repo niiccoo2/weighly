@@ -17,8 +17,13 @@ def createEmptyDB(name):
         weight REAL NOT NULL,
         type TEXT,
         time TEXT NOT NULL
-    )
-    """)
+    ) """)
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS events (
+        event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        custom_url TEXT
+    ) """ )
     conn.commit()
     conn.close()
 

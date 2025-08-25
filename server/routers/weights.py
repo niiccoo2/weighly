@@ -5,6 +5,6 @@ from database import get_weights
 
 router = APIRouter()
 
-@router.get("/weights/{group}", response_model=List[Weight])
-def read_weights(group: str):
-    return get_weights(group)
+@router.get("/weights/{event}", response_model=List[Weight])
+def read_weights(event: str):
+    return get_weights(event)

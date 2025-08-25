@@ -12,7 +12,7 @@ def createEmptyDB(name):
     c.execute("""
     CREATE TABLE IF NOT EXISTS weights (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        group_id TEXT NOT NULL,
+        event_id TEXT NOT NULL,
         name TEXT NOT NULL,
         weight INTEGER NOT NULL,
         type TEXT,
@@ -22,10 +22,10 @@ def createEmptyDB(name):
     conn.commit()
     conn.close()
 
-def get_weights(group: str):
+def get_weights(event: str):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT id, name, weight, type, time FROM weights WHERE group_id = ?", (group,))
+    c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event,))
     rows = c.fetchall()
     conn.close()
     return [Weight(id=row[0], name=row[1], weight=row[2], type=row[3], time=row[4]) for row in rows]

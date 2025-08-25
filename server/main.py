@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 import routers
-from database import createEmptyDB
+from database import createEmptyDB, DB_FILE
 import os
 
-DB_FILE = "weighly.db"
 app = FastAPI()
 
 if not os.path.exists(DB_FILE):

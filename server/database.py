@@ -1,6 +1,7 @@
 import sqlite3
 from models import Weight, Summed_Weight
-from main import DB_FILE
+
+DB_FILE = "weighly.db"
 
 def createEmptyDB(name):
     conn = sqlite3.connect(name)

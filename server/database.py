@@ -14,7 +14,9 @@ def createEmptyDB(name):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         group_id TEXT NOT NULL,
         name TEXT NOT NULL,
-        weight INTEGER NOT NULL
+        weight INTEGER NOT NULL,
+        type TEXT,
+        time TEXT NOT NULL
     )
     """)
     conn.commit()

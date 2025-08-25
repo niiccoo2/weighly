@@ -33,31 +33,30 @@ ctk.rowconfigure(3, weight=1)
 ctk.rowconfigure(4, weight=1)
 ctk.rowconfigure(5, weight=1)
 
-scout = tk.StringVar(ctk)
+name = tk.StringVar(ctk)
 weight_to_display = tk.StringVar(ctk)
 person_type = tk.StringVar(ctk)
 person_type.set("Scout")
-Bigtotal = tk.StringVar(ctk)
+running_total = tk.StringVar(ctk)
 with open(FILENAME, "r") as file:
     file=file.read().split(",")
     try:
-        Bigtotal.set(str(file[-3]))
+        running_total.set(str(file[-3]))
     except:
-        Bigtotal.set("0")
+        running_total.set("0")
 
 
-# Tare function placeholder
 def Tare_The_Scale():
-    Tare = get_serial(SERIALPORT, BAUDRATE, "x") #gives error with dummy weight
+    get_serial(SERIALPORT, BAUDRATE, "x")
     
-    Tare = get_serial(SERIALPORT, BAUDRATE, "1")
+    get_serial(SERIALPORT, BAUDRATE, "1")
     
-    Tare = get_serial(SERIALPORT, BAUDRATE, "x")
+    get_serial(SERIALPORT, BAUDRATE, "x")
 
 
 # Buttons and labels
 btnSaveToFile = customtkinter.CTkButton(
-    ctk, text="Save To File", font=("Helvetica", 60), command=lambda: write_to_file(FILENAME, scout, person_type, weight_to_display, Bigtotal)
+    ctk, text="Save To File", font=("Helvetica", 60), command=lambda: write_to_file(FILENAME, name, person_type, weight_to_display, running_total)
 )
 btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
@@ -71,7 +70,7 @@ label1 = customtkinter.CTkLabel(
 )
 label1.grid(row=0, column=0, columnspan=3, rowspan=3)
 
-label2 = customtkinter.CTkLabel(ctk, textvariable=Bigtotal, font=("Helvetica", 60))
+label2 = customtkinter.CTkLabel(ctk, textvariable=running_total, font=("Helvetica", 60))
 label2.grid(row=3, column=2, columnspan=1, rowspan=1)
 
 label3 = customtkinter.CTkLabel(
@@ -79,7 +78,7 @@ label3 = customtkinter.CTkLabel(
 )
 
 NameEntry = customtkinter.CTkEntry(
-    ctk, textvariable=scout, font=("Helvetica", 60), width=300, height=60
+    ctk, textvariable=name, font=("Helvetica", 60), width=300, height=60
 )
 NameEntry.grid(row=4, column=1, columnspan=1, rowspan=3)
 
@@ -98,7 +97,6 @@ r3 = customtkinter.CTkRadioButton(
 )
 r3.grid(row=5, column=0, rowspan=1)
 
-# Adjust font size dynamically without flickering
 current_font_size = 0  # Store the current font size
 
 def adjust_font_size(event=None):
@@ -120,8 +118,7 @@ def adjust_font_size(event=None):
 #NameEntry.bind("<Return>", write_to_file) # This makes it so you can press enter to save the weight, but when uncommented
                                            # it makes it so you can only save with enter
 
-# Update weight dynamically only if it changes
-last_weight = None  # Store the last weight
+last_weight = None
 
 def my_mainloop():
     global last_weight

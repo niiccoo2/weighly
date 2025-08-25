@@ -1,6 +1,0 @@
-Bigtotal
-BUADRATE
-Tare_The_Scale
-weight_to_display
-ScoutTypeDisplay
-scale

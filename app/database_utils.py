@@ -27,14 +27,14 @@ def save_to_file(filename: str, name: str, weight: float, person_type: str):
         return str(e)
 
 
-def save_to_database(name: str, weight: float, person_type: str):
+def save_to_database(event: int, name: str, weight: float, person_type: str):
     """
     Saves name, weight, and type to weighly backend.
     Returns 0 for success, otherwise the error message.
     """
     if name != "":
         try:
-            url = "http://127.0.0.1:8000/1/add_weight"  # This is for local testing
+            url = f"http://127.0.0.1:8000/{event}/add_weight"  # This is for local testing
 
             payload = {
                 "name": name,
@@ -53,7 +53,7 @@ def save_to_database(name: str, weight: float, person_type: str):
     else:
         return "Name cannot be blank"
 
-def save_weight(name: str, weight: float, person_type: str):
+def save_weight(event: int, name: str, weight: float, person_type: str):
     """
     Calls both save to database and file at the same time and gives saved or error message.
     """
@@ -63,7 +63,7 @@ def save_weight(name: str, weight: float, person_type: str):
     file = save_to_file(FILENAME, name, weight, person_type)
 
     if file == 0: # Only save to db if it saves to file
-        database = save_to_database(name, weight, person_type)
+        database = save_to_database(event, name, weight, person_type)
 
     if file == 0 and database == 0: # If they both return 0 for no error
         CTkMessagebox(
@@ -82,3 +82,22 @@ def save_weight(name: str, weight: float, person_type: str):
                 message=f"Error: {str(database)}",
                 icon="cancel"
             )
+
+def read_running_total(event: int) -> int:
+    url = f"http://127.0.0.1:8000/{event}/total"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+
+        data = response.json()
+        
+        return data
+
+    except requests.exceptions.RequestException as e:
+        CTkMessagebox(
+                title="Error", 
+                message=f"Error: {e}",
+                icon="cancel"
+            )
+        return 0

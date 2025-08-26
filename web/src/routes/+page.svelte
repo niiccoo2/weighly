@@ -1,28 +1,46 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  
-  let leaderboard: any[] = [];
-  let kg_mode: string = "lbs"
-  let op_kg_mode: string = "kgs"
-  $: kgMode = $page.url.searchParams.has('kgs');
+	import { page } from '$app/stores';
+	import { onMount, tick } from 'svelte';
 
-  $: (async () => {
-    if (kgMode) {
-	  const module = await import('../example.json');
-	  leaderboard = module.default;
-	  leaderboard = leaderboard.map(item => ({
-		...item,
-		score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
-	  }));
-	  kg_mode = "kgs";
-	  op_kg_mode = "lbs";
-    } else {
-      const module = await import('../example.json');
-      leaderboard = module.default;
-      kg_mode = "lbs";
-      op_kg_mode = "kgs";
-    }
-  })();
+	let leaderboard: any[] = [];
+	let kg_mode: string = "lbs";
+	let op_kg_mode: string = "kgs";
+	$: kgMode = $page.url.searchParams.has('kgs');
+
+	async function getLeaderboard() {
+		console.log("Fetching leaderboard…");
+		const res = await fetch("http://127.0.0.1:8000/1/summary");
+		console.log("Response status:", res.status);
+
+		const data = await res.json();
+		console.log("Fetched data:", data);
+		leaderboard = [...data.totals.map((item: any, i: number) => ({
+			...item,
+			rank: i + 1,
+			score_lbs: item.weight,
+			category: item.type // for compatibility with example.json
+		}))];
+		if (kgMode) {
+			leaderboard = leaderboard.map(item => ({
+				...item,
+				score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
+			}));
+			kg_mode = "kgs";
+			op_kg_mode = "lbs";
+		} else {
+			kg_mode = "lbs";
+			op_kg_mode = "kgs";
+		}
+		await tick();
+	}
+
+	onMount(() => {
+		getLeaderboard();
+		console.log("Fetched leaderboard:", leaderboard);
+	});
+
+
+
 </script>
 
 <style>
@@ -74,7 +92,7 @@
 					<tr class="p-6 rounded-xl bg-gray-200 rounded-xl hover:shadow-[4px_4px_8px_#b8b8b8,-4px_-4px_8px_#ffffff] shadow-[2px_2px_4px_#b8b8b8,-2px_-2px_4px_#ffffff] text-center font-semibold hover:scale-105 lightmode-foreground">
 						<td class="px-4 py-2">{item.rank}.</td>
 						<td class="px-4 py-2">{item.name}</td>
-						<td class="px-2 py-2"  style="color: grey; font-size: 1rem;">{item.category}</td>
+						<td class="px-2 py-2"  style="color: grey; font-size: 1rem;">{item.type}</td>
 						<td class="px-4 py-2">{item.score_lbs} <a href="?{op_kg_mode}">{kg_mode}</a></td>
 					</tr>
 				{/each}

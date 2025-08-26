@@ -9,6 +9,8 @@ router = APIRouter()
 
 db = DB()
 
+# GET API's
+
 @router.get("/", response_class=HTMLResponse)
 def give_guide(): # Nico this should just give the readme so they can see it if they go to it.
     try:
@@ -38,16 +40,18 @@ def make_summary(event: str):
         "totals": db.get_sums(event)
     }
 
+@router.get("/{event}") # This would not require an api key prob just tells you what event has the id
+def get_event_from_id(event: str):
+    return {
+        "event": db.get_event_info(event),
+    }
+
+# POST API's
+
 @router.post("/{event}/add_weight")
 async def save_weight_to_db(event: int, item: Weight):
     db.save_weight(event, item)
     return {
         "message": "Item saved successfully!",
         "item": item
-    }
-
-@router.get("/{event}") # This would not require an api key prob just tells you what event has the id
-def get_event_from_id(event: str):
-    return {
-        "event": db.get_event_info(event),
     }

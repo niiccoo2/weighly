@@ -2,12 +2,12 @@ from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 from typing import List
 from models import Weight, Summed_Weight, Summary
-from database import DB
+from database import Database
 import markdown2
 
 router = APIRouter()
 
-db = DB()
+db = Database()
 
 # GET API's
 

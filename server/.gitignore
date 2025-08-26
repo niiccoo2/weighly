@@ -2,3 +2,4 @@
 __pycache__
 .env
 venv
+ignore_this_nico.txt

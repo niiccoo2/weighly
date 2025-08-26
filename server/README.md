@@ -137,3 +137,50 @@ This endpoint retrieves a list of weight entries.
 #### Error Responses
 - **404 Not Found**: If there are no weight entries.
 - **500 Internal Server Error**: If there is a server issue.
+
+### GET /{event}/total
+
+#### Description
+This endpoint returns the total of all weights for an event
+
+#### Request
+- **Method**: GET
+- **Endpoint**: `/{event}/total`
+- **Example**: `/1/total`
+
+#### Response
+- **Status Code**: 200 OK
+- **Body**:
+```json
+14.0
+```
+
+#### Error Responses
+- **500 Internal Server Error**: If there is a server issue.
+
+### POST /{event}/add_weight
+
+#### Description
+This endpoint adds weights to the database.
+
+#### Request
+- **Method**: POST
+- **Endpoint**: `/{event}/add_weight`
+- **Example**: `/1/add_weight`
+
+#### Request
+- **Status Code**: 200 OK
+- **Body**:
+```json
+{
+  "id": "1",
+  "name": "Nico",
+  "weight": 16.5,
+  "type": "scout",
+  "time": "2024-11-23 13:56:18.506589"
+}
+```
+
+#### Error Responses
+- **404 Not Found**: If there are no weight entries.
+- **500 Internal Server Error**: If there is a server issue.

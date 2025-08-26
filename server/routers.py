@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from models import Weight, Summed_Weight, Summary
-from database import get_entries, get_sums, get_event_info, save_weight
+from database import get_entries, get_sums, get_total, get_event_info, save_weight
 
 router = APIRouter()
 
@@ -19,6 +19,10 @@ def make_summary(event: str):
         "event": get_event_info(event),
         "totals": get_sums(event)
     }
+
+@router.get("/{event}/total", response_model=float)
+def read_total(event: str):
+    return get_total(event)
 
 @router.post("/{event}/add_weight")
 async def save_weight_to_db(event: int, item: Weight):

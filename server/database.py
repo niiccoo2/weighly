@@ -4,7 +4,7 @@ from models import Weight, Summed_Weight, Event
 DB_FILE = "weighly.db" # Do not put this in main.py, main needs it to make a new db
                        # on init so DON'T
 
-class DB:
+class Database:
     def __init__(self, db_file=None):
         if db_file is None:
             self.db_file = DB_FILE

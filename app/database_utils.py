@@ -84,6 +84,9 @@ def save_weight(event: int, name: str, weight: float, person_type: str):
             )
 
 def read_running_total(event: int) -> int:
+    """
+    Reads the running total for an event from database.
+    """
     url = f"http://127.0.0.1:8000/{event}/total"
 
     try:

@@ -18,7 +18,7 @@ def get_serial(serialport, buadrate, stringToSend):
     i=0
     #time.sleep(.1)
     while (Data_Ready == 0):
-        Data_Ready = ser.inWaiting()
+        Data_Ready = ser.in_waiting
         i=i+1
         if i>10:
             print("I BROKE!")

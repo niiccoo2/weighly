@@ -1,11 +1,12 @@
 import sqlite3
 from models import Weight, Summed_Weight, Event
+from typing import Optional
 
 DB_FILE = "weighly.db" # Do not put this in main.py, main needs it to make a new db
                        # on init so DON'T
 
 class Database:
-    def __init__(self, db_file=None):
+    def __init__(self, db_file: Optional[str] = None):
         if db_file is None:
             self.db_file = DB_FILE
         self.conn = sqlite3.connect(self.db_file)

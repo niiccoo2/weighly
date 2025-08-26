@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import routers
-from database import createEmptyDB, DB_FILE
+from database import DB_FILE, DB
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +15,6 @@ app.add_middleware(
 )
 
 if not os.path.exists(DB_FILE):
-    createEmptyDB(DB_FILE)
+    DB(DB_FILE)
 
 app.include_router(routers.router)

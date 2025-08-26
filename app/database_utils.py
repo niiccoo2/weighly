@@ -14,7 +14,7 @@ def write_to_file(filename, name, person_type, weight, running_total):
             bt = round(bt + float(weight_to_file), 2)
             running_total.set(str(bt))
 
-            hs.write(f"{clean_name},{ScoutTypeDisplay},{weight_to_file},lbs,{bt},lbs,{ct}\n")
+            hs.write(f"{clean_name},{ScoutTypeDisplay},{weight_to_file},{bt},{ct}\n")
 
         CTkMessagebox(
             title="Saved", message=f"Saved {weight_to_file} lbs. from {clean_name}"

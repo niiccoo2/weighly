@@ -73,3 +73,12 @@ def get_event_info(event: str):
         return None
 
     return Event(event_id=row[0], name=row[1], custom_url=row[2])
+
+def save_weight(event_id: int, weight: Weight):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+
+    c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name, weight.weight, weight.type, weight.time))
+
+    conn.commit()
+    conn.close()

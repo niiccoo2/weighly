@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { onMount, tick } from 'svelte';
 
-	let leaderboard: any[] = [];
+	let leaderboard: any[] = [{ "rank": "???", "name": "Failure to fetch!", "category": "Leaderboard Fall back", "score_lbs": 0 }];
 	let kg_mode: string = "lbs";
 	let op_kg_mode: string = "kgs";
 	$: kgMode = $page.url.searchParams.has('kgs');
@@ -18,7 +18,7 @@
 			...item,
 			rank: i + 1,
 			score_lbs: item.weight,
-			category: item.type // for compatibility with example.json
+			category: item.type
 		}))];
 		if (kgMode) {
 			leaderboard = leaderboard.map(item => ({

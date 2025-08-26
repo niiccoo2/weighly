@@ -20,7 +20,8 @@ def createEmptyDB(name):
     CREATE TABLE IF NOT EXISTS events (
         event_id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        custom_url TEXT
+        custom_url TEXT,
+        type_options TEXT
     ) """ )
     conn.commit()
     conn.close()

@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter
 from scale_utils import get_serial, get_serial_dummy
-from database_utils import save_weight, FILENAME
+from database_utils import save_weight, read_running_total, FILENAME
 
 use_dummy_scale = True # Remove this once the ability to enter weight is added
 
@@ -38,12 +38,12 @@ saved_weight = tk.DoubleVar(ctk)
 person_type = tk.StringVar(ctk)
 person_type.set("Scout")
 running_total = tk.StringVar(ctk)
-with open(FILENAME, "r") as file:
-    file=file.read().split(",")
-    try:
-        running_total.set(str(file[-3]))
-    except:
-        running_total.set("0")
+# with open(FILENAME, "r") as file:
+#     file=file.read().split(",")
+#     try:
+#         running_total.set(str(file[-3]))
+#     except:
+#         running_total.set("0")
 
 
 def Tare_The_Scale():
@@ -56,7 +56,7 @@ def Tare_The_Scale():
 
 # Buttons and labels
 btnSaveToFile = customtkinter.CTkButton(
-    ctk, text="Save To File", font=("Helvetica", 60), command=lambda: save_weight(name.get(), float(weight_to_display.get().rstrip(" lbs.")), person_type.get())
+    ctk, text="Save To File", font=("Helvetica", 60), command=lambda: save_weight(1, name.get(), float(weight_to_display.get().rstrip(" lbs.")), person_type.get())
 )
 btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
@@ -122,6 +122,7 @@ last_weight = None
 
 def my_mainloop():
     global last_weight
+    running_total.set(str(read_running_total(1)))
     weight = get_serial(SERIALPORT, BAUDRATE, "W")
     if weight != last_weight:
         last_weight = weight

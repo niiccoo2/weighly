@@ -11,7 +11,7 @@ class Weight(BaseModel):
 class Summed_Weight(BaseModel):
     name: str
     weight: float
-    type: str
+    type: Optional[str] = None
 
 class Event(BaseModel):
     event_id: int

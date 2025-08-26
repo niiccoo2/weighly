@@ -57,6 +57,24 @@ def get_sums(event: str):
 
     return [Summed_Weight(name=row[0], weight=row[1], type=row[2]) for row in rows]
 
+def get_total(event: str):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT SUM(weight) AS total_weight
+        FROM weights
+        WHERE event_id = ?;
+    """, (event,))
+    
+    row = c.fetchone()
+    conn.close()
+
+    # If there are no rows or SUM returns None
+    if row is None or row[0] is None:
+        return 0
+    return row[0]
+    
 def get_event_info(event: str):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()

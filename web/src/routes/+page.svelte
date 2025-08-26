@@ -39,7 +39,23 @@
 		console.log("Fetched leaderboard:", leaderboard);
 	});
 
-
+	function toggleUnits() {
+    if (kg_mode === "lbs") {
+        leaderboard = leaderboard.map(item => ({
+            ...item,
+            score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
+        }));
+        kg_mode = "kgs";
+        op_kg_mode = "lbs";
+    } else {
+        leaderboard = leaderboard.map(item => ({
+            ...item,
+            score_lbs: Math.round(item.score_lbs / 0.45359237 * 100) / 100
+        }));
+        kg_mode = "lbs";
+        op_kg_mode = "kgs";
+    }
+}
 
 </script>
 
@@ -93,7 +109,10 @@
 						<td class="px-4 py-2">{item.rank}.</td>
 						<td class="px-4 py-2">{item.name}</td>
 						<td class="px-2 py-2"  style="color: grey; font-size: 1rem;">{item.type}</td>
-						<td class="px-4 py-2">{item.score_lbs} <a href="?{op_kg_mode}">{kg_mode}</a></td>
+						<td class="px-4 py-2">
+						{item.score_lbs} 
+						<button on:click={() => toggleUnits()}>{kg_mode}</button>
+						</td>
 					</tr>
 				{/each}
 			</tbody>

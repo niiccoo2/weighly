@@ -27,9 +27,27 @@ def read_entries(event: str):
 def read_totals(event: str):
     return db.get_sums(event)
 
+@router.get("/{event}/total", response_model=float)
+def read_total(event: str):
+    return db.get_total(event)
+
 @router.get("/{event}/summary", response_model=Summary)
 def make_summary(event: str):
     return {
         "event": db.get_event_info(event),
         "totals": db.get_sums(event)
+    }
+
+@router.post("/{event}/add_weight")
+async def save_weight_to_db(event: int, item: Weight):
+    db.save_weight(event, item)
+    return {
+        "message": "Item saved successfully!",
+        "item": item
+    }
+
+@router.get("/{event}") # This would not require an api key prob just tells you what event has the id
+def get_event_from_id(event: str):
+    return {
+        "event": db.get_event_info(event),
     }

@@ -23,7 +23,8 @@ class DB:
         CREATE TABLE IF NOT EXISTS events (
             event_id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            custom_url TEXT
+            custom_url TEXT,
+            type_options TEXT
         ) """ )
         self.conn.commit()
         self.conn.close()
@@ -75,3 +76,31 @@ class DB:
             return None
 
         return Event(event_id=row[0], name=row[1], custom_url=row[2])
+
+    def get_total(self, event: str):
+        self.conn = sqlite3.connect(self.db_file)
+        self.c = self.conn.cursor()
+
+        self.c.execute("""
+            SELECT SUM(weight) AS total_weight
+            FROM weights
+            WHERE event_id = ?;
+        """, (event,))
+        
+        row = self.c.fetchone()
+        self.conn.close()
+
+        # If there are no rows or SUM returns None
+        if row is None or row[0] is None:
+            return 0
+        return row[0]
+
+
+    def save_weight(self, event_id: int, weight: Weight):
+        self.conn = sqlite3.connect(self.db_file)
+        self.c = self.conn.cursor()
+
+        self.c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name, weight.weight, weight.type, weight.time))
+
+        self.conn.commit()
+        self.conn.close()

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class Weight(BaseModel):
-    id: int
+    id: Optional[int] = None
     name: str
     weight: float
     type: str
@@ -11,7 +11,7 @@ class Weight(BaseModel):
 class Summed_Weight(BaseModel):
     name: str
     weight: float
-    type: str
+    type: Optional[str] = None
 
 class Event(BaseModel):
     event_id: int

@@ -31,9 +31,13 @@ class Database:
         self.conn.close()
 
     def get_entries(self, event: str):
+        try:
+            event_id = int(event)
+        except ValueError:
+            return "Error 1001: Incorrect Id Error (recived string or bad id)"
         self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
-        self.c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event,))
+        self.c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event_id,))
         rows =  self.c.fetchall()
         self.conn.close()
 

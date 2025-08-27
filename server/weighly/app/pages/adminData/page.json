@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "type": "dashboard",
+  "title": "Admin - Data",
+  "hideInSidebar": false,
+  "config": {
+    "withDateRangePicker": false,
+    "stats": [
+      {
+        "key": "stat_1kfgh0",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "single",
+        "dataSource": "sqlite_db_nv61ul",
+        "title": "Number Of Events",
+        "sqlQuery": "SELECT COUNT(*) FROM events;"
+      }
+    ],
+    "cards": [
+      {
+        "key": "card_wej0ct",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "barChart",
+        "dataSource": "sqlite_db_nv61ul",
+        "values": [
+          {
+            "alias": "total_weight",
+            "color": "#0245ff"
+          }
+        ],
+        "dataKeyAlias": "event_name",
+        "title": "Total Weight from all events",
+        "sqlQuery": "SELECT e.name as event_name, SUM(w.weight) as total_weight FROM events e JOIN weights w ON e.event_id = w.event_id GROUP BY e.name ORDER BY e.name"
+      }
+    ]
+  },
+  "allowedRoleIds": [
+    "5527"
+  ]
+}

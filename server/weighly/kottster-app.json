@@ -1,0 +1,14 @@
+{
+  "id": "f22d509d-7121-41fd-a04f-fd0ad433c694",
+  "meta": {
+    "name": "Weighly - Admin Panel",
+    "icon": "https://web.kottster.app/icon.png"
+  },
+  "menuPageOrder": [
+    "allEvents",
+    "adminWeights",
+    "adminData",
+    "troop30Weights",
+    "troop30Data"
+  ]
+}

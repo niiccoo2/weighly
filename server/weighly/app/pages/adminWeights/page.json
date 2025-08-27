@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "Admin - Weights",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "sqlite_db_nv61ul",
+    "fetchStrategy": "databaseTable",
+    "table": "weights",
+    "allowedRoleIdsToDelete": [
+      "5527"
+    ],
+    "allowedRoleIdsToInsert": [
+      "5527"
+    ],
+    "allowedRoleIdsToUpdate": [
+      "5527"
+    ]
+  },
+  "allowedRoleIds": [
+    "5527"
+  ]
+}

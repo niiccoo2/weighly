@@ -55,3 +55,21 @@ async def save_weight_to_db(event: int, item: Weight):
         "message": "Item saved successfully!",
         "item": item
     }
+
+@router.post("/{event}/remove_weight")
+async def remove_weight_from_db(event: int, item: Weight):
+    if item.id is None:
+        return {
+            "message": "Error: 'id' field is required to remove a weight entry.",
+            "item": item
+        }
+    rows_deleted = db.remove_weight(item.id)
+    if rows_deleted == 0:
+        return {
+            "message": f"No entry found with id={item.id}.",
+            "item": item
+        }
+    return {
+        "message": "Item removed successfully!",
+        "item": item
+    }

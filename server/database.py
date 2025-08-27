@@ -101,7 +101,14 @@ class Database:
         self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
 
-        self.c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name, weight.weight, weight.type, weight.time))
+        self.c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name.capitalize(), weight.weight, weight.type.lower(), weight.time))
 
         self.conn.commit()
         self.conn.close()
+
+    def remove_weight(self, weight_id: int):
+        with sqlite3.connect(self.db_file) as conn:
+            c = conn.cursor()
+            c.execute("DELETE FROM weights WHERE id = ?", (weight_id,))
+            conn.commit()
+            return c.rowcount

@@ -184,3 +184,30 @@ This endpoint adds weights to the database.
 #### Error Responses
 - **404 Not Found**: If there are no weight entries.
 - **500 Internal Server Error**: If there is a server issue.
+
+### POST /{event}/remove_weight
+
+#### Description
+This endpoint removes a weight entry from the database. Use /{event}/entries to find the id.
+
+#### Request
+- **Method**: POST
+- **Endpoint**: `/{event}/add_weight`
+- **Example**: `/1/add_weight`
+
+#### Request
+- **Status Code**: 200 OK
+- **Body**:
+```json
+{
+  "id": "1",
+  "name": "Nico",
+  "weight": 16.5,
+  "type": "scout",
+  "time": "2024-11-23 13:56:18.506589"
+}
+```
+
+#### Error Responses
+- **404 Not Found**: If there are no weight entries.
+- **500 Internal Server Error**: If there is a server issue.

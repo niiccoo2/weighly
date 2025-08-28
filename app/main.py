@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import threading
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight, read_running_total, FILENAME
 
@@ -16,7 +17,9 @@ class Weighly(ctk.CTk):
         self.use_dummy_scale = True # Remove this once the ability to enter weight is added
 
         if self.use_dummy_scale:
-            get_serial = get_serial_dummy
+            self.get_serial = get_serial_dummy
+        else:
+            self.get_serial = get_serial
 
         self.SERIALPORT = "/dev/ttyUSB0"  #Real Sparfun Open Scale
         #self.SERIALPORT = "/dev/ttyACM0"  #Dummy Sparfun Open Scale on Arduino
@@ -29,11 +32,11 @@ class Weighly(ctk.CTk):
 
 
     def tare_scale(self):
-        get_serial(self.SERIALPORT, self.BAUDRATE, "x")
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
         
-        get_serial(self.SERIALPORT, self.BAUDRATE, "1")
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "1")
         
-        get_serial(self.SERIALPORT, self.BAUDRATE, "x")
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
     
     def main_screen(self):
         self.columnconfigure(0, weight=1)
@@ -57,7 +60,7 @@ class Weighly(ctk.CTk):
             self, 
             text="Save To File", 
             font=("Helvetica", 60), 
-            command=lambda: save_weight(1, self.name.get(), float(self.weight_TKvar.get()), self.person_type.get()))
+            command=lambda: save_weight(1, self.name.get(), float(self.weight_TKvar.get().rstrip(" lbs.")), self.person_type.get()))
         self.btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
         self.btnTare = ctk.CTkButton(
@@ -69,7 +72,7 @@ class Weighly(ctk.CTk):
 
         self.label1 = ctk.CTkLabel(
             self, 
-            textvariable=f"{self.weight_TKvar} lbs.",
+            textvariable=self.weight_TKvar,
             font=("Helvetica", 200), 
             width=100)
         self.label1.grid(row=0, column=0, columnspan=3, rowspan=3)
@@ -118,11 +121,9 @@ class Weighly(ctk.CTk):
         self.r3.grid(row=5, column=0, rowspan=1)
     
     def adjust_font_size(self, event=None):
-        global current_font_size
         new_font_size = int((self.winfo_width() + self.winfo_height()) // 50)
 
         if new_font_size != self.current_font_size:
-            current_font_size = new_font_size
             self.btnSaveToFile.configure(font=("Helvetica", int(new_font_size // 1.5)))
             self.btnTare.configure(font=("Helvetica", new_font_size // 1.5))
             self.label1.configure(font=("Helvetica", new_font_size))
@@ -133,23 +134,28 @@ class Weighly(ctk.CTk):
             self.r2.configure(font=("Helvetica", new_font_size // 2))
             self.r3.configure(font=("Helvetica", new_font_size // 2))
 
+def update_running_total():
+    def worker():
+        try:
+            total = read_running_total(1)
+            weighly.after(0, lambda: weighly.running_total.set(str(total)))
+        except Exception as e:
+            print("Error updating total:", e)
 
-  
+    threading.Thread(target=worker, daemon=True).start()
+
 
 if __name__ == "__main__":
     weighly = Weighly()
 
     def my_mainloop():
-        # initialize the attribute on first call
-        if not hasattr(my_mainloop, "last_weight"):
-            my_mainloop.last_weight = None
+        update_running_total()
 
-        weighly.running_total.set(str(read_running_total(1)))
-        weight = get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
 
         if weight != my_mainloop.last_weight:
             my_mainloop.last_weight = weight
-            weighly.weight_TKvar.set(f"{weight}")
+            weighly.weight_TKvar.set(f"{weight} lbs.")
 
         weighly.after(500, my_mainloop)
 

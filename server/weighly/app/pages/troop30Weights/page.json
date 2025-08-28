@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "Troop 30 - Weights",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "sqlite_db_nv61ul",
+    "fetchStrategy": "rawSqlQuery",
+    "customSqlQuery": "SELECT id, event_id, name, weight, type, time FROM weights WHERE event_id = 1;"
+  },
+  "allowedRoleIds": [
+    "5527",
+    "5530"
+  ]
+}

@@ -30,15 +30,20 @@ class Database:
         self.conn.commit()
         self.conn.close()
 
-    def get_entries(self, event: str):
+    def get_entries(self, event: str): # BROKEN NICO FIX THIS I CANT FIGURE IT OUT GRRRR
+        try:
+            event_id = int(event)
+        except ValueError:
+            return []
+
         self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
-        self.c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event,))
-        rows =  self.c.fetchall()
+        self.c.execute("SELECT id, name, weight, type, time FROM weights WHERE event_id = ?", (event_id,))
+        rows = self.c.fetchall()
         self.conn.close()
 
-        if rows is None:
-            return None
+        if not rows:
+            return []
 
         return [Weight(id=row[0], name=row[1], weight=row[2], type=row[3], time=row[4]) for row in rows]
 
@@ -101,7 +106,14 @@ class Database:
         self.conn = sqlite3.connect(self.db_file)
         self.c = self.conn.cursor()
 
-        self.c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name, weight.weight, weight.type, weight.time))
+        self.c.execute("INSERT INTO weights (event_id, name, weight, type, time) VALUES (?, ?, ?, ?, ?)", (event_id, weight.name.capitalize(), weight.weight, weight.type.lower(), weight.time))
 
         self.conn.commit()
         self.conn.close()
+
+    def remove_weight(self, weight_id: int):
+        with sqlite3.connect(self.db_file) as conn:
+            c = conn.cursor()
+            c.execute("DELETE FROM weights WHERE id = ?", (weight_id,))
+            conn.commit()
+            return c.rowcount

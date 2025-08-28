@@ -70,20 +70,20 @@ class Weighly(ctk.CTk):
             command=self.tare_scale)
         self.btnTare.grid(row=3, column=2, columnspan=1, rowspan=3)
 
-        self.label1 = ctk.CTkLabel(
+        self.weight_label = ctk.CTkLabel(
             self, 
             textvariable=self.weight_TKvar,
             font=("Helvetica", 200), 
             width=100)
-        self.label1.grid(row=0, column=0, columnspan=3, rowspan=3)
+        self.weight_label.grid(row=0, column=0, columnspan=3, rowspan=3)
 
-        self.label2 = ctk.CTkLabel(
+        self.running_total_label = ctk.CTkLabel(
             self, 
             textvariable=self.running_total, 
             font=("Helvetica", 60))
-        self.label2.grid(row=3, column=2, columnspan=1, rowspan=1)
+        self.running_total_label.grid(row=3, column=2, columnspan=1, rowspan=1)
 
-        self.label3 = ctk.CTkLabel(
+        self.max_on_scale = ctk.CTkLabel(
             self, 
             text=("200 lbs. maximum on scale."), 
             font=("Helvetica", 40))
@@ -126,9 +126,9 @@ class Weighly(ctk.CTk):
         if new_font_size != self.current_font_size:
             self.btnSaveToFile.configure(font=("Helvetica", int(new_font_size // 1.5)))
             self.btnTare.configure(font=("Helvetica", new_font_size // 1.5))
-            self.label1.configure(font=("Helvetica", new_font_size))
-            self.label2.configure(font=("Helvetica", new_font_size))
-            self.label3.configure(font=("Helvetica", int(new_font_size // 1.3)))
+            self.weight_label.configure(font=("Helvetica", new_font_size))
+            self.running_total_label.configure(font=("Helvetica", new_font_size))
+            self.max_on_scale.configure(font=("Helvetica", int(new_font_size // 1.3)))
             self.NameEntry.configure(font=("Helvetica", new_font_size))
             self.r1.configure(font=("Helvetica", new_font_size // 2))
             self.r2.configure(font=("Helvetica", new_font_size // 2))
@@ -144,18 +144,20 @@ def update_running_total():
 
     threading.Thread(target=worker, daemon=True).start()
 
+def update_scale_weight():
+    def update():
+        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weighly.weight_TKvar.set(f"{weight} lbs.")
+
+    threading.Thread(target=update, daemon=True).start()
+
 
 if __name__ == "__main__":
     weighly = Weighly()
 
     def my_mainloop():
         update_running_total()
-
-        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
-
-        if weight != my_mainloop.last_weight:
-            my_mainloop.last_weight = weight
-            weighly.weight_TKvar.set(f"{weight} lbs.")
+        update_scale_weight()
 
         weighly.after(500, my_mainloop)
 

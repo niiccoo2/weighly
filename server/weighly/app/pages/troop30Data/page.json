@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "type": "dashboard",
+  "title": "Troop 30 - Data",
+  "hideInSidebar": false,
+  "config": {
+    "withDateRangePicker": false,
+    "stats": [
+      {
+        "key": "stat_jopr3x",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "ratio",
+        "dataSource": "sqlite_db_nv61ul",
+        "title": "Troop 30 compared to rest of weighly",
+        "sqlQuery": "SELECT COALESCE(SUM(weight), 0) AS total_combined_weight FROM weights WHERE event_id = 1;",
+        "sqlTotalQuery": "SELECT COALESCE(SUM(weight), 0) AS total_combined_weight FROM weights;",
+        "infoTooltipText": "",
+        "suffix": "lbs"
+      }
+    ],
+    "cards": [
+      {
+        "key": "card_u022ih",
+        "fetchStrategy": "rawSqlQuery",
+        "type": "lineChart",
+        "dataSource": "sqlite_db_nv61ul",
+        "values": [
+          {
+            "alias": "weight",
+            "color": "#0245ff"
+          }
+        ],
+        "dataKeyAlias": "date",
+        "title": "Troop 30 weight over time",
+        "sqlQuery": "SELECT DATE(time) as date, weight FROM weights WHERE event_id = 1 ORDER BY date",
+        "withDots": true,
+        "span": "6"
+      }
+    ]
+  },
+  "allowedRoleIds": [
+    "5530",
+    "5527"
+  ]
+}

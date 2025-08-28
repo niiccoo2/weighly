@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "type": "table",
+  "title": "All Events",
+  "hideInSidebar": false,
+  "config": {
+    "dataSource": "sqlite_db_nv61ul",
+    "fetchStrategy": "databaseTable",
+    "table": "events"
+  }
+}

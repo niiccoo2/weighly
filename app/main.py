@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import threading
+import time
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight, read_running_total, FILENAME
 
@@ -74,7 +75,7 @@ class Weighly(ctk.CTk):
             self, 
             textvariable=self.weight_TKvar,
             font=("Helvetica", 200), 
-            width=100)
+            width=1000)
         self.weight_label.grid(row=0, column=0, columnspan=3, rowspan=3)
 
         self.running_total_label = ctk.CTkLabel(
@@ -134,34 +135,29 @@ class Weighly(ctk.CTk):
             self.r2.configure(font=("Helvetica", new_font_size // 2))
             self.r3.configure(font=("Helvetica", new_font_size // 2))
 
-def update_running_total():
-    def worker():
+def update_scale_thread():
+    while True:
+        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weighly.after(0, lambda: weighly.weight_TKvar.set(f"{weight:>4} lbs."))
+
+        time.sleep(1)
+
+def update_running_total_thread():
+    while True:
         try:
             total = read_running_total(1)
             weighly.after(0, lambda: weighly.running_total.set(str(total)))
         except Exception as e:
             print("Error updating total:", e)
-
-    threading.Thread(target=worker, daemon=True).start()
-
-def update_scale_weight():
-    def update():
-        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
-        weighly.after(0, lambda: weighly.weight_TKvar.set(f"{weight} lbs."))
-
-    threading.Thread(target=update, daemon=True).start()
+        time.sleep(10)
 
 
 if __name__ == "__main__":
     weighly = Weighly()
 
-    def my_mainloop():
-        update_running_total()
-        update_scale_weight()
+    threading.Thread(target=update_scale_thread, daemon=True).start()
+    threading.Thread(target=update_running_total_thread, daemon=True).start()
 
-        weighly.after(500, my_mainloop)
-
-    weighly.after(500, my_mainloop)
     weighly.adjust_font_size(0)
     weighly.bind("<Configure>", weighly.adjust_font_size)
 

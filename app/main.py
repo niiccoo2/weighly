@@ -5,54 +5,45 @@ from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight, read_running_total, FILENAME
 
 class Weighly(ctk.CTk):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
+    def __init__(self):
+        super().__init__()
 
-        # configure the root window
-        ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-        ctk.set_default_color_theme("dark-blue")  # Themes: "blue", "green", "dark-blue"
+        ctk.set_appearance_mode("System")
+        ctk.set_default_color_theme("dark-blue")
         self.title('Weighly')
         self.geometry('1000x500')
         self.resizable(True, True)
 
-        self.use_dummy_scale = True # Remove this once the ability to enter weight is added
-
-        if self.use_dummy_scale:
-            self.get_serial = get_serial_dummy
-        else:
-            self.get_serial = get_serial
-
-        self.SERIALPORT = "/dev/ttyUSB0"  #Real Sparfun Open Scale
-        #self.SERIALPORT = "/dev/ttyACM0"  #Dummy Sparfun Open Scale on Arduino
+        self.SERIALPORT = "/dev/ttyUSB0"
         self.BAUDRATE = 9600
-        self.current_font_size = 0
 
-        open(FILENAME, "a") # Creates the file if non existent
+        open(FILENAME, "a")  # make sure file exists
 
-        #self.main_screen()
+        # Dictionary to store frames
+        self.frames = {}
 
-        self.label = ctk.CTkLabel(self, text="Main Screen", font=("Helvetica", 40))
-        self.label.pack(pady=50)
+        for F in (MainScreen, SettingsScreen):
+            frame = F(self, self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
 
-        self.btn_to_settings = ctk.CTkButton(
-            self, text="Go to Settings", 
-            command=lambda: controller.show_frame(SettingsScreen)
-        )
-        self.btn_to_settings.pack()
+        self.show_frame(MainScreen)
+    
+    def show_frame(self, frame_class):
+        frame = self.frames[frame_class]
+        frame.tkraise()
 
 def update_scale_thread():
     while True:
-        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
-        weighly.after(0, lambda: weighly.weight_TKvar.set(f"{weight:>4} lbs."))
-
+        weight = weighly.frames[MainScreen].get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weighly.frames[MainScreen].after(0, lambda: weighly.frames[MainScreen].weight_TKvar.set(f"{weight:>4} lbs."))
         time.sleep(1)
 
 def update_running_total_thread():
     while True:
         try:
             total = read_running_total(1)
-            weighly.after(0, lambda: weighly.running_total.set(str(total)))
+            weighly.frames[MainScreen].after(0, lambda: weighly.frames[MainScreen].running_total.set(str(total)))
         except Exception as e:
             print("Error updating total:", e)
         time.sleep(10)
@@ -61,6 +52,14 @@ class MainScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+
+        self.current_font_size = 0
+        self.use_dummy_scale = True # Remove this once the ability to enter weight is added
+
+        if self.use_dummy_scale:
+            self.get_serial = get_serial_dummy
+        else:
+            self.get_serial = get_serial
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
@@ -104,9 +103,8 @@ class MainScreen(ctk.CTkFrame):
         self.weight_label = ctk.CTkLabel(
             self, 
             textvariable=self.weight_TKvar,
-            font=("Helvetica", 200), 
-            width=1000)
-        self.weight_label.grid(row=0, column=0, columnspan=3, rowspan=3)
+            font=("Helvetica", 200))
+        self.weight_label.grid(row=0, column=0, columnspan=3, rowspan=3, sticky="nsew", padx=10, pady=10)
 
         self.running_total_label = ctk.CTkLabel(
             self, 
@@ -152,7 +150,7 @@ class MainScreen(ctk.CTkFrame):
         self.r3.grid(row=5, column=0, rowspan=1)
     
     def adjust_font_size(self, event=None):
-        new_font_size = int((self.winfo_width() + self.winfo_height()) // 50)
+        new_font_size = max(20, min(int((self.winfo_width() + self.winfo_height()) // 50), 100))
 
         if new_font_size != self.current_font_size:
             self.btnSaveToFile.configure(font=("Helvetica", int(new_font_size // 1.5)))
@@ -166,11 +164,11 @@ class MainScreen(ctk.CTkFrame):
             self.r3.configure(font=("Helvetica", new_font_size // 2))
         
     def tare_scale(self):
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
+        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
         
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "1")
+        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "1")
         
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
+        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
 
 class SettingsScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -193,7 +191,8 @@ if __name__ == "__main__":
     threading.Thread(target=update_scale_thread, daemon=True).start()
     threading.Thread(target=update_running_total_thread, daemon=True).start()
 
-    weighly.adjust_font_size(0)
-    weighly.bind("<Configure>", weighly.adjust_font_size)
+    main_frame = weighly.frames[MainScreen]
+    main_frame.adjust_font_size(0)
+    main_frame.bind("<Configure>", main_frame.adjust_font_size)
 
     weighly.mainloop()

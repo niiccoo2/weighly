@@ -5,8 +5,9 @@ from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight, read_running_total, FILENAME
 
 class Weighly(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
 
         # configure the root window
         ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
@@ -29,17 +30,38 @@ class Weighly(ctk.CTk):
 
         open(FILENAME, "a") # Creates the file if non existent
 
-        self.main_screen()
+        #self.main_screen()
 
+        self.label = ctk.CTkLabel(self, text="Main Screen", font=("Helvetica", 40))
+        self.label.pack(pady=50)
 
-    def tare_scale(self):
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
-        
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "1")
-        
-        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
-    
-    def main_screen(self):
+        self.btn_to_settings = ctk.CTkButton(
+            self, text="Go to Settings", 
+            command=lambda: controller.show_frame(SettingsScreen)
+        )
+        self.btn_to_settings.pack()
+
+def update_scale_thread():
+    while True:
+        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weighly.after(0, lambda: weighly.weight_TKvar.set(f"{weight:>4} lbs."))
+
+        time.sleep(1)
+
+def update_running_total_thread():
+    while True:
+        try:
+            total = read_running_total(1)
+            weighly.after(0, lambda: weighly.running_total.set(str(total)))
+        except Exception as e:
+            print("Error updating total:", e)
+        time.sleep(10)
+
+class MainScreen(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=1)
@@ -57,6 +79,14 @@ class Weighly(ctk.CTk):
         self.running_total = ctk.StringVar(self)
 
         # Buttons
+
+        self.btnSettings = ctk.CTkButton(
+            self, 
+            text="Settings", 
+            font=("Helvetica", 20), 
+            command=lambda: controller.show_frame(SettingsScreen))
+        self.btnSettings.grid(row=0, column=2, columnspan=1, rowspan=1)
+
         self.btnSaveToFile = ctk.CTkButton(
             self, 
             text="Save To File", 
@@ -134,22 +164,27 @@ class Weighly(ctk.CTk):
             self.r1.configure(font=("Helvetica", new_font_size // 2))
             self.r2.configure(font=("Helvetica", new_font_size // 2))
             self.r3.configure(font=("Helvetica", new_font_size // 2))
+        
+    def tare_scale(self):
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
+        
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "1")
+        
+        self.get_serial(self.SERIALPORT, self.BAUDRATE, "x")
 
-def update_scale_thread():
-    while True:
-        weight = weighly.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
-        weighly.after(0, lambda: weighly.weight_TKvar.set(f"{weight:>4} lbs."))
+class SettingsScreen(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
 
-        time.sleep(1)
+        self.label = ctk.CTkLabel(self, text="Settings Screen", font=("Helvetica", 40))
+        self.label.pack(pady=50)
 
-def update_running_total_thread():
-    while True:
-        try:
-            total = read_running_total(1)
-            weighly.after(0, lambda: weighly.running_total.set(str(total)))
-        except Exception as e:
-            print("Error updating total:", e)
-        time.sleep(10)
+        self.btn_to_main = ctk.CTkButton(
+            self, text="Back to Main", 
+            command=lambda: controller.show_frame(MainScreen)
+        )
+        self.btn_to_main.pack()
 
 
 if __name__ == "__main__":

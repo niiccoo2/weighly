@@ -13,6 +13,8 @@ class Weighly(ctk.CTk):
         self.title('Weighly')
         self.geometry('1000x500')
         self.resizable(True, True)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
         self.SERIALPORT = "/dev/ttyUSB0"
         self.BAUDRATE = 9600
@@ -104,7 +106,7 @@ class MainScreen(ctk.CTkFrame):
             self, 
             textvariable=self.weight_TKvar,
             font=("Helvetica", 200))
-        self.weight_label.grid(row=0, column=0, columnspan=3, rowspan=3, sticky="nsew", padx=10, pady=10)
+        self.weight_label.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
 
         self.running_total_label = ctk.CTkLabel(
             self, 

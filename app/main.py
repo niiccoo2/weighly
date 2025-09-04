@@ -40,8 +40,11 @@ class Weighly(ctk.CTk):
 def update_scale_thread():
     while True:
         weight = weighly.frames["MainScreen"].get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+
         # weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].weight_TKvar.set(f"{weight:>4} lbs."))
         weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].weight_TKvar.set(f"{weight} lbs."))
+        # Was trying to get the weight to be centered ^^^
+
         time.sleep(1)
 
 def update_running_total_thread():

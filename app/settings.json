@@ -1,0 +1,8 @@
+{
+    "SERIALPORT": "/dev/ttyUSB0",
+    "BAUDRATE": 9600,
+    "theme": "dark-blue",
+    "input_mode": "manual",
+    "unit": "lbs",
+    "auto_remove_name": true
+}

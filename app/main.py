@@ -4,6 +4,7 @@ import time
 from database_utils import read_running_total, FILENAME
 from main_screen import MainScreen
 from settings_screen import SettingsScreen
+from json_utils import load_settings, save_settings
 
 class Weighly(ctk.CTk):
     def __init__(self):
@@ -17,8 +18,13 @@ class Weighly(ctk.CTk):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        self.SERIALPORT = "/dev/ttyUSB0"
-        self.BAUDRATE = 9600
+        # self.SERIALPORT = "/dev/ttyUSB0"
+        # self.BAUDRATE = 9600 # Not needed when reading from settings
+
+        self.settings = load_settings()
+        self.SERIALPORT = self.settings["SERIALPORT"]
+        self.BAUDRATE = self.settings["BAUDRATE"]
+
 
         open(FILENAME, "a")  # make sure file exists
 

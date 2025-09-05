@@ -15,15 +15,12 @@ class MainScreen(ctk.CTkFrame):
         else:
             self.get_serial = get_serial
 
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
-        self.columnconfigure(2, weight=1)
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=1)
-        self.rowconfigure(4, weight=1)
-        self.rowconfigure(5, weight=1)
+        for i in range(3):
+            self.columnconfigure(i, weight=1)
+        
+        for i in range(6):
+            self.rowconfigure(i, weight=1)
+        
 
         self.name = ctk.StringVar(self)
         self.weight_TKvar = ctk.StringVar(self)

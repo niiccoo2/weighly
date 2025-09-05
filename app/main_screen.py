@@ -107,8 +107,9 @@ class MainScreen(ctk.CTkFrame):
         new_font_size = max(20, min(int((self.winfo_width() + self.winfo_height()) // 50), 100))
 
         if new_font_size != self.current_font_size:
-            self.btnSaveToFile.configure(font=("Helvetica", int(new_font_size // 1.5)))
+            self.btnSaveToFile.configure(font=("Helvetica", new_font_size // 1.5))
             self.btnTare.configure(font=("Helvetica", new_font_size // 1.5))
+            self.btnSettings.configure(font=("Helvetica", new_font_size // 1.5))
             self.weight_label.configure(font=("Helvetica", new_font_size))
             self.running_total_label.configure(font=("Helvetica", new_font_size))
             #self.max_on_scale.configure(font=("Helvetica", int(new_font_size // 1.3)))

@@ -13,10 +13,11 @@ class SettingsScreen(ctk.CTkFrame):
         
 
         self.label = ctk.CTkLabel(self, text="Settings Screen", font=("Helvetica", 40))
-        
+        self.label.grid(row=0, column=1, columnspan=2, rowspan=1)
 
         self.btn_to_main = ctk.CTkButton(
             self, text="Back to Main", 
             command=lambda: controller.show_frame("MainScreen")
         )
+        self.btn_to_main.grid(row=1, column=1, columnspan=2, rowspan=1)
         

@@ -15,10 +15,10 @@ class SettingsScreen(ctk.CTkFrame):
             self, text="Back to Main", 
             command=lambda: controller.show_frame("MainScreen")
         )
-        self.btn_back.grid(row=0, column=0)
+        self.btn_back.grid(row=0, column=0, columnspan=1, sticky="nw", pady=10, padx=10) # Change pady and padx to change with window size
 
         self.settings_label = ctk.CTkLabel(self, text="Settings", font=("Helvetica", 20))
-        self.settings_label.grid(row=0, column=3)
+        self.settings_label.grid(row=0, column=0, columnspan=8, sticky="n", pady=10)
 
         self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission", font=("Helvetica", 20))
         self.keep_name_label.grid(row=1, column=2)

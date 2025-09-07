@@ -31,3 +31,4 @@ class SettingsScreen(ctk.CTkFrame):
         self.switch_var = ctk.StringVar(value="on")
         self.keep_name_switch = ctk.CTkSwitch(self, text="CTkSwitch", command=switch_event,
                                  variable=self.switch_var, onvalue="on", offvalue="off")
+        self.keep_name_switch.grid(row=1, column=2)

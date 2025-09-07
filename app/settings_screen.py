@@ -8,7 +8,7 @@ class SettingsScreen(ctk.CTkFrame):
         for i in range(8):
             self.columnconfigure(i, weight=1)
         
-        for i in range(6):
+        for i in range(8):
             self.rowconfigure(i, weight=1)
         
         self.btn_back = ctk.CTkButton(
@@ -20,5 +20,14 @@ class SettingsScreen(ctk.CTkFrame):
         self.settings_label = ctk.CTkLabel(self, text="Settings", font=("Helvetica", 20))
         self.settings_label.grid(row=0, column=0, columnspan=8, sticky="n", pady=10)
 
+        # Settings
+
         self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission", font=("Helvetica", 20))
-        self.keep_name_label.grid(row=1, column=2)
+        self.keep_name_label.grid(row=1, column=1)
+
+        def switch_event():
+            print("switch toggled, current value:", self.switch_var.get())
+
+        self.switch_var = ctk.StringVar(value="on")
+        self.keep_name_switch = ctk.CTkSwitch(self, text="CTkSwitch", command=switch_event,
+                                 variable=self.switch_var, onvalue="on", offvalue="off")

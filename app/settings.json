@@ -4,5 +4,5 @@
     "theme": "dark-blue",
     "scale_mode": false,
     "unit": "lbs",
-    "keep_name": false
+    "keep_name": true
 }

@@ -147,11 +147,32 @@ class MainScreen(ctk.CTkFrame):
     def reload(self):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
+
+        if hasattr(self, "weight"):
+            self.weight.destroy()
+
+
+        if self.settings["scale_mode"] == True:
+            self.weight = ctk.CTkLabel(
+                self, 
+                text="",
+                font=("Helvetica", 200))
+            self.weight.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
+        else:
+            self.weight = ctk.CTkEntry(
+                self, 
+                font=("Helvetica", 60), 
+                width=300, 
+                height=60,
+                placeholder_text="Weight")
+            self.weight.grid(row=2, column=1, columnspan=1, rowspan=3)
     
     def get_current_weight(self):
         self.weight: Any
         if self.settings["scale_mode"]:
             return float(self.weight.cget("text").replace(" lbs.", ""))
         else:
-            return float(self.weight.get().replace(" lbs.", ""))
+            weight = float(self.weight.get().replace(" lbs.", ""))
+            self.NameEntry.delete(0, "end")
+            return weight
 

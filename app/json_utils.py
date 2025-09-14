@@ -5,7 +5,7 @@ default_settings = {
     "SERIALPORT": "/dev/ttyUSB0",
     "BAUDRATE": 9600,
     "theme": "dark-blue",
-    "input_mode": "manual",
+    "scale_mode": False,
     "unit": "lbs",
     "keep_name": True
 }

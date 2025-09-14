@@ -24,16 +24,37 @@ class SettingsScreen(ctk.CTkFrame):
         # Settings
         self.settings = load_settings()
 
+        # keep_name
         self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission:", font=("Helvetica", 20))
         self.keep_name_label.grid(row=1, column=1)
 
-        def _update_keep_name_setting():
-            print("keep_name_switch toggled, current value:", self.switch_var.get())
-            self.settings["keep_name"] = self.switch_var.get()
-            save_settings(self.settings)
-
-
-        self.switch_var = ctk.BooleanVar(value=self.settings["keep_name"]) #init ctk var
-        self.keep_name_switch = ctk.CTkSwitch(self, text="", command=_update_keep_name_setting,
-                                 variable=self.switch_var, onvalue=True, offvalue=False)
+        self.keep_name_switch_var = ctk.BooleanVar(value=self.settings["keep_name"]) #init ctk var
+        self.keep_name_switch = ctk.CTkSwitch(self,
+                                               text="",
+                                               command= lambda: self._update_setting(self.settings,
+                                                                                     "keep_name",
+                                                                                     self.keep_name_switch_var),
+                                               variable=self.keep_name_switch_var,
+                                               onvalue=True, 
+                                               offvalue=False)
         self.keep_name_switch.grid(row=1, column=2)
+
+        # scale_mode
+        self.scale_mode_label = ctk.CTkLabel(self, text="Use USB scale:", font=("Helvetica", 20))
+        self.scale_mode_label.grid(row=2, column=1)
+
+        self.scale_mode_switch_var = ctk.BooleanVar(value=self.settings["scale_mode"]) #init ctk var
+        self.scale_mode_switch = ctk.CTkSwitch(self,
+                                               text="",
+                                               command= lambda: self._update_setting(self.settings,
+                                                                                     "scale_mode",
+                                                                                     self.scale_mode_switch_var),
+                                               variable=self.scale_mode_switch_var,
+                                               onvalue=True, 
+                                               offvalue=False)
+        self.scale_mode_switch.grid(row=2, column=2)
+
+    def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
+            print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())
+            settings[setting_to_change] = value_to_change_to.get()
+            save_settings(self.settings)

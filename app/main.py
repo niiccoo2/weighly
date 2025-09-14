@@ -44,19 +44,22 @@ class Weighly(ctk.CTk):
         
         # reload settings if returning to MainScreen
         if frame_name == "MainScreen":
-            frame.reload_settings()
+            frame.reload()
 
         frame.tkraise()
 
 def update_scale_thread():
-    while True:
-        weight = weighly.frames["MainScreen"].get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+    scale_mode = weighly.frames["MainScreen"].settings["scale_mode"]
+    if scale_mode:
+        while True:
+            
+            weight = weighly.frames["MainScreen"].get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
 
-        # weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].weight_TKvar.set(f"{weight:>4} lbs."))
-        weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].weight_TKvar.set(f"{weight} lbs."))
-        # Was trying to get the weight to be centered ^^^
+            weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].weight.configure(text=f"{weight} lbs."))
+            # Was trying to get the weight to be centered ^^^
 
-        time.sleep(1)
+            time.sleep(1)
+    return
 
 def update_running_total_thread():
     while True:

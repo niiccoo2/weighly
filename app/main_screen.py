@@ -2,6 +2,7 @@ import customtkinter as ctk
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight
 from json_utils import load_settings
+from typing import Any
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -23,9 +24,9 @@ class MainScreen(ctk.CTkFrame):
             self.rowconfigure(i, weight=1)
         
 
-        self.name = ctk.StringVar(self)
-        self.weight_TKvar = ctk.StringVar(self)
-        self.saved_weight = ctk.DoubleVar(self) # Might be able to remove this
+        #self.name = ctk.StringVar(self)
+        #self.weight_TKvar = ctk.StringVar(self)
+        #self.saved_weight = ctk.DoubleVar(self) # Might be able to remove this
         self.person_type = ctk.StringVar(self, "Scout")
         self.running_total = ctk.StringVar(self)
 
@@ -45,8 +46,8 @@ class MainScreen(ctk.CTkFrame):
             text="Save To File", 
             font=("Helvetica", 60), 
             command=lambda: save_weight(1,
-                                        self.name.get() if self.settings["keep_name"] else self._clear_name_input(),
-                                        float(self.weight_TKvar.get().replace(" lbs.", "")),
+                                        self.NameEntry.get() if self.settings["keep_name"] else self._clear_name_input(),
+                                        self.get_current_weight(),
                                         self.person_type.get()))
             # self.name.get() will NOT clear the name
         self.btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
@@ -58,11 +59,20 @@ class MainScreen(ctk.CTkFrame):
             command=self.tare_scale)
         self.btnTare.grid(row=3, column=2, columnspan=1, rowspan=3)
 
-        self.weight_label = ctk.CTkLabel(
-            self, 
-            textvariable=self.weight_TKvar,
-            font=("Helvetica", 200))
-        self.weight_label.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
+        if self.settings["scale_mode"] == True:
+            self.weight = ctk.CTkLabel(
+                self, 
+                text="",
+                font=("Helvetica", 200))
+            self.weight.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
+        else:
+            self.weight = ctk.CTkEntry(
+                self, 
+                font=("Helvetica", 60), 
+                width=300, 
+                height=60,
+                placeholder_text="Weight")
+            self.weight.grid(row=2, column=1, columnspan=1, rowspan=3)
 
         self.running_total_label = ctk.CTkLabel(
             self, 
@@ -77,10 +87,10 @@ class MainScreen(ctk.CTkFrame):
         
         self.NameEntry = ctk.CTkEntry(
             self, 
-            textvariable=self.name, 
             font=("Helvetica", 60), 
             width=300, 
-            height=60)
+            height=60,
+            placeholder_text="Name")
         self.NameEntry.grid(row=4, column=1, columnspan=1, rowspan=3)
 
         self.r1 = ctk.CTkRadioButton(
@@ -114,7 +124,7 @@ class MainScreen(ctk.CTkFrame):
             self.btnSaveToFile.configure(font=("Helvetica", new_font_size // 1.5))
             self.btnTare.configure(font=("Helvetica", new_font_size // 1.5))
             self.btnSettings.configure(font=("Helvetica", new_font_size // 1.5))
-            self.weight_label.configure(font=("Helvetica", new_font_size))
+            self.weight.configure(font=("Helvetica", new_font_size))
             self.running_total_label.configure(font=("Helvetica", new_font_size))
             #self.max_on_scale.configure(font=("Helvetica", int(new_font_size // 1.3)))
             self.NameEntry.configure(font=("Helvetica", new_font_size))
@@ -130,10 +140,18 @@ class MainScreen(ctk.CTkFrame):
         self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
     
     def _clear_name_input(self):
-        name = self.name.get()
-        self.name.set("")
+        name = self.NameEntry.get()
+        self.NameEntry.delete(0, "end")
         return name
     
-    def reload_settings(self):
+    def reload(self):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
+    
+    def get_current_weight(self):
+        self.weight: Any
+        if self.settings["scale_mode"]:
+            return float(self.weight.cget("text").replace(" lbs.", ""))
+        else:
+            return float(self.weight.get().replace(" lbs.", ""))
+

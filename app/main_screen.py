@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight
+from json_utils import load_settings
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -28,6 +29,8 @@ class MainScreen(ctk.CTkFrame):
         self.person_type = ctk.StringVar(self, "Scout")
         self.running_total = ctk.StringVar(self)
 
+        self.settings = load_settings()
+
         # Buttons
 
         self.btnSettings = ctk.CTkButton(
@@ -41,7 +44,11 @@ class MainScreen(ctk.CTkFrame):
             self, 
             text="Save To File", 
             font=("Helvetica", 60), 
-            command=lambda: save_weight(1, self.name.get(), float(self.weight_TKvar.get().replace(" lbs.", "")), self.person_type.get()))
+            command=lambda: save_weight(1,
+                                        self.name.get() if self.settings["keep_name"] else self._clear_name_input(),
+                                        float(self.weight_TKvar.get().replace(" lbs.", "")),
+                                        self.person_type.get()))
+            # self.name.get() will NOT clear the name
         self.btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
         self.btnTare = ctk.CTkButton(
@@ -121,3 +128,12 @@ class MainScreen(ctk.CTkFrame):
         self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "1")
         
         self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
+    
+    def _clear_name_input(self):
+        name = self.name.get()
+        self.name.set("")
+        return name
+    
+    def reload_settings(self):
+        self.settings = load_settings()
+        print("Reloaded settings:", self.settings)

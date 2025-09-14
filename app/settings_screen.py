@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from json_utils import save_settings, load_settings
 
 class SettingsScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -21,14 +22,18 @@ class SettingsScreen(ctk.CTkFrame):
         self.settings_label.grid(row=0, column=0, columnspan=8, sticky="n", pady=10)
 
         # Settings
+        self.settings = load_settings()
 
-        self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission", font=("Helvetica", 20))
+        self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission:", font=("Helvetica", 20))
         self.keep_name_label.grid(row=1, column=1)
 
-        def switch_event():
-            print("switch toggled, current value:", self.switch_var.get())
+        def _update_keep_name_setting():
+            print("keep_name_switch toggled, current value:", self.switch_var.get())
+            self.settings["keep_name"] = self.switch_var.get()
+            save_settings(self.settings)
 
-        self.switch_var = ctk.StringVar(value="on")
-        self.keep_name_switch = ctk.CTkSwitch(self, text=self.switch_var.get(), command=switch_event,
-                                 variable=self.switch_var, onvalue="on", offvalue="off")
+
+        self.switch_var = ctk.BooleanVar(value=self.settings["keep_name"]) #init ctk var
+        self.keep_name_switch = ctk.CTkSwitch(self, text="", command=_update_keep_name_setting,
+                                 variable=self.switch_var, onvalue=True, offvalue=False)
         self.keep_name_switch.grid(row=1, column=2)

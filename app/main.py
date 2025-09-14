@@ -41,6 +41,11 @@ class Weighly(ctk.CTk):
     
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
+        
+        # reload settings if returning to MainScreen
+        if frame_name == "MainScreen":
+            frame.reload_settings()
+
         frame.tkraise()
 
 def update_scale_thread():

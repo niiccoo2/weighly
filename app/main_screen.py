@@ -1,7 +1,9 @@
 import customtkinter as ctk
+import threading
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight
 from json_utils import load_settings
+from threads import update_weight_thread
 from typing import Any
 
 class MainScreen(ctk.CTkFrame):
@@ -150,9 +152,9 @@ class MainScreen(ctk.CTkFrame):
 
         if hasattr(self, "weight"):
             self.weight.destroy()
-
-
-        if self.settings["scale_mode"] == True:
+        
+        # Make correct weight element
+        if self.settings["scale_mode"]:
             self.weight = ctk.CTkLabel(
                 self, 
                 text="",
@@ -166,6 +168,20 @@ class MainScreen(ctk.CTkFrame):
                 height=60,
                 placeholder_text="Weight")
             self.weight.grid(row=2, column=1, columnspan=1, rowspan=3)
+        
+        # Clear current weight element
+        if isinstance(self.weight, ctk.CTkLabel):
+            self.weight.configure(text="")
+        else:  # fallback if somehow it's an Entry
+            self.weight.delete(0, "end")
+            self.weight.insert(0, "")
+        
+        # Make sure everything is correct size
+        self.adjust_font_size()
+
+        # Restart scale update thread if scale_mode
+        if self.settings["scale_mode"]:
+            threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
     
     def get_current_weight(self):
         self.weight: Any

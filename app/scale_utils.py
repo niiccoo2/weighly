@@ -21,7 +21,7 @@ def get_serial(serialport, buadrate, stringToSend):
         Data_Ready = ser.in_waiting
         i=i+1
         if i>10:
-            print("I BROKE!")
+            print("Scale timeout. [scale_utils.py, line 24 ish]")
             break
     
     input_string =""

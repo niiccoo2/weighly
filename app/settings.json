@@ -2,7 +2,7 @@
     "SERIALPORT": "/dev/ttyUSB0",
     "BAUDRATE": 9600,
     "theme": "dark-blue",
-    "scale_mode": true,
+    "scale_mode": false,
     "unit": "lbs",
     "keep_name": true
 }

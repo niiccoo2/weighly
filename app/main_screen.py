@@ -68,12 +68,15 @@ class MainScreen(ctk.CTkFrame):
                 font=("Helvetica", 200))
             self.weight.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
         else:
+            vcmd = self.register(self._only_numbers)
             self.weight = ctk.CTkEntry(
                 self, 
                 font=("Helvetica", 60), 
                 width=300, 
                 height=60,
-                placeholder_text="Weight")
+                placeholder_text="Weight",
+                validate="key",
+                validatecommand=(vcmd, "%P"))
             self.weight.grid(row=2, column=1, columnspan=1, rowspan=3)
 
         self.running_total_label = ctk.CTkLabel(
@@ -146,6 +149,14 @@ class MainScreen(ctk.CTkFrame):
         self.NameEntry.delete(0, "end")
         return name
     
+    
+    def _only_numbers(self, new_value):
+        # Allow empty string so user can delete everything
+        if new_value == "":
+            return True
+        # Return True only if new_value is digits
+        return new_value.isdigit()
+    
     def reload(self):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
@@ -161,12 +172,15 @@ class MainScreen(ctk.CTkFrame):
                 font=("Helvetica", 200))
             self.weight.grid(row=1, column=0, columnspan=3, rowspan=2, sticky="nsew", padx=10, pady=10)
         else:
+            vcmd = self.register(self._only_numbers)
             self.weight = ctk.CTkEntry(
                 self, 
                 font=("Helvetica", 60), 
                 width=300, 
                 height=60,
-                placeholder_text="Weight")
+                placeholder_text="Weight",
+                validate="key",
+                validatecommand=(vcmd, "%P"))
             self.weight.grid(row=2, column=1, columnspan=1, rowspan=3)
         
         # Clear current weight element

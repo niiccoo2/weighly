@@ -1,10 +1,10 @@
 import customtkinter as ctk
 import threading
-import time
-from database_utils import read_running_total, FILENAME
+from database_utils import FILENAME
 from main_screen import MainScreen
 from settings_screen import SettingsScreen
-from json_utils import load_settings, save_settings
+from json_utils import load_settings
+from threads import update_running_total_thread, update_weight_thread
 
 class Weighly(ctk.CTk):
     def __init__(self):
@@ -48,49 +48,12 @@ class Weighly(ctk.CTk):
 
         frame.tkraise()
 
-def update_scale_thread():
-    main_screen = weighly.frames["MainScreen"]
-    scale_mode = main_screen.settings["scale_mode"]
-    
-    if not scale_mode:
-        return
-
-    while True:
-        # Get the weight from the scale
-        weight = main_screen.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
-
-        # Capture the current widget reference and weight in the lambda
-        weight_widget = main_screen.weight
-
-        def update_widget(w=weight_widget, wt=weight):
-            if isinstance(w, ctk.CTkLabel):
-                w.configure(text=f"{wt} lbs.")
-            else:  # fallback if somehow it's an Entry
-                w.delete(0, "end")
-                w.insert(0, f"{wt} lbs.")
-
-        # Schedule the update on the main thread
-        main_screen.after(0, update_widget)
-
-        time.sleep(1)
-
-def update_running_total_thread():
-    while True:
-        try:
-            total = read_running_total(1)
-            weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].running_total.set(str(total)))
-        except Exception as e:
-            print("Error updating total:", e)
-        time.sleep(10)
-
-
-
 
 if __name__ == "__main__":
     weighly = Weighly()
 
-    threading.Thread(target=update_scale_thread, daemon=True).start()
-    threading.Thread(target=update_running_total_thread, daemon=True).start()
+    threading.Thread(target= lambda: update_weight_thread(weighly), daemon=True).start()
+    threading.Thread(target= lambda: update_running_total_thread(weighly), daemon=True).start()
 
     main_frame = weighly.frames["MainScreen"]
     main_frame.adjust_font_size(0)

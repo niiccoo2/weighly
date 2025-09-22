@@ -54,6 +54,27 @@ class SettingsScreen(ctk.CTkFrame):
                                                offvalue=False)
         self.scale_mode_switch.grid(row=2, column=2)
 
+        # port
+
+        self.port_label = ctk.CTkLabel(self, text="Scale port:", font=("Helvetica", 20))
+        self.port_label.grid(row=3, column=1)
+
+        self.port_var = ctk.StringVar(value=self.settings["SERIALPORT"]) #init ctk var
+        self.port_dropdown = ctk.CTkOptionMenu(self,
+                                               values=["/dev/ttyUSB0", "/dev/ttyUSB1", "COM1", "COM2"],
+                                               command= lambda _: self._update_setting(self.settings,
+                                                                                         "SERIALPORT",
+                                                                                         self.port_var),
+                                               # the _ above is because when it runs the cmd, it passes a var,
+                                               # in this case thats the selected item, but we dont need that,
+                                               # but we still need to do something with it, or else it gets mad
+                                               # so we assign it to _ and do nothing with it
+                                               variable=self.port_var)
+        self.port_dropdown.grid(row=3, column=2)
+
+        # baud rate
+        # stuff goes here
+
     def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
             print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())
             settings[setting_to_change] = value_to_change_to.get()

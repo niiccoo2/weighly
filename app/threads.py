@@ -12,7 +12,7 @@ def update_weight_thread(weighly):
     while scale_mode:
         scale_mode = main_screen.settings["scale_mode"]
         # Get the weight from the scale
-        weight = main_screen.get_serial(weighly.SERIALPORT, weighly.BAUDRATE, "W")
+        weight = main_screen.get_serial(main_screen.settings["SERIALPORT"], main_screen.settings["BAUDRATE"], "W")
 
         # Capture the current widget reference and weight in the lambda
         weight_widget = main_screen.weight

@@ -11,6 +11,8 @@ class MainScreen(ctk.CTkFrame):
         super().__init__(parent)
         self.controller = controller
 
+        self.settings = load_settings()
+
         self.current_font_size = 0
         self.use_dummy_scale = True # Remove this once the ability to enter weight is added
 
@@ -31,8 +33,6 @@ class MainScreen(ctk.CTkFrame):
         #self.saved_weight = ctk.DoubleVar(self) # Might be able to remove this
         self.person_type = ctk.StringVar(self, "Scout")
         self.running_total = ctk.StringVar(self)
-
-        self.settings = load_settings()
 
         # Buttons
 
@@ -138,11 +138,11 @@ class MainScreen(ctk.CTkFrame):
             self.r3.configure(font=("Helvetica", new_font_size // 2))
         
     def tare_scale(self):
-        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
+        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "x")
         
-        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "1")
+        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "1")
         
-        self.get_serial(self.controller.SERIALPORT, self.controller.BAUDRATE, "x")
+        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "x")
     
     def _clear_name_input(self):
         name = self.NameEntry.get()

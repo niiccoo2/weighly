@@ -73,7 +73,18 @@ class SettingsScreen(ctk.CTkFrame):
         self.port_dropdown.grid(row=3, column=2)
 
         # baud rate
-        # stuff goes here
+        
+        self.baud_label = ctk.CTkLabel(self, text="Scale baudrate:", font=("Helvetica", 20))
+        self.baud_label.grid(row=4, column=1)
+
+        self.baud_var = ctk.StringVar(value=self.settings["BAUDRATE"]) #init ctk var
+        self.baud_dropdown = ctk.CTkOptionMenu(self,
+                                               values=["4800", "9600", "19200", "38400", "57600", "115200"],
+                                               command= lambda _: self._update_setting(self.settings,
+                                                                                       "BAUDRATE",
+                                                                                       self.baud_var),
+                                               variable=self.baud_var)
+        self.baud_dropdown.grid(row=4, column=2)
 
     def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
             print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())

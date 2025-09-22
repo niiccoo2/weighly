@@ -1,6 +1,6 @@
 {
     "SERIALPORT": "COM1",
-    "BAUDRATE": "9600",
+    "BAUDRATE": "4800",
     "theme": "dark-blue",
     "scale_mode": false,
     "unit": "lbs",

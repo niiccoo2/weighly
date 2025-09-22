@@ -3,7 +3,7 @@ import os
 
 default_settings = {
     "SERIALPORT": "/dev/ttyUSB0",
-    "BAUDRATE": 9600,
+    "BAUDRATE": "9600",
     "theme": "dark-blue",
     "scale_mode": False,
     "unit": "lbs",

@@ -61,7 +61,7 @@ class SettingsScreen(ctk.CTkFrame):
 
         self.port_var = ctk.StringVar(value=self.settings["SERIALPORT"]) #init ctk var
         self.port_dropdown = ctk.CTkOptionMenu(self,
-                                               values=["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "COM1", "COM2" "COM3", "COM4"],
+                                               values=["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "COM1", "COM2", "COM3", "COM4"],
                                                command= lambda _: self._update_setting(self.settings,
                                                                                          "SERIALPORT",
                                                                                          self.port_var),

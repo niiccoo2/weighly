@@ -6,7 +6,7 @@ default_settings = {
     "BAUDRATE": "9600",
     "theme": "dark-blue",
     "scale_mode": False,
-    "unit": "lbs",
+    "unit": "lb",
     "keep_name": True
 }
 

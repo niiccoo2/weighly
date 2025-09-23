@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import threading
+from CTkMessagebox import CTkMessagebox
 from scale_utils import get_serial, get_serial_dummy
 from database_utils import save_weight
 from json_utils import load_settings
@@ -47,7 +48,7 @@ class MainScreen(ctk.CTkFrame):
             self, 
             text="Save To File", 
             font=("Helvetica", 60), 
-            command=lambda: save_weight(1,
+            command=lambda: save_weight(1, # Might want to change this to first run a function that makes sure all the inputs are correct
                                         self.NameEntry.get() if self.settings["keep_name"] else self._clear_name_input(),
                                         self.get_current_weight(),
                                         self.person_type.get()))
@@ -57,7 +58,7 @@ class MainScreen(ctk.CTkFrame):
         self.btnTare = ctk.CTkButton(
             self, 
             text="Tare", 
-            font=("Helvetica", 20), 
+            font=("Helvetica", 20),
             command=self.tare_scale)
         self.btnTare.grid(row=3, column=2, columnspan=1, rowspan=3)
 
@@ -202,7 +203,15 @@ class MainScreen(ctk.CTkFrame):
         if self.settings["scale_mode"]:
             return float(self.weight.cget("text").replace(" lbs.", ""))
         else:
-            weight = float(self.weight.get().replace(" lbs.", ""))
-            self.NameEntry.delete(0, "end")
-            return weight
+            if not self.weight.get().replace(" lbs.", "").isdigit():
+                CTkMessagebox(
+                    title="Error", 
+                    message="Error, weight must be a number. Saved as 0.",
+                    icon="cancel"
+                )
+                return 0
+            else:
+                weight = float(self.weight.get().replace(" lbs.", ""))
+                self.NameEntry.delete(0, "end")
+                return weight
 

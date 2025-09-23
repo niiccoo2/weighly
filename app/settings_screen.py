@@ -86,6 +86,20 @@ class SettingsScreen(ctk.CTkFrame):
                                                variable=self.baud_var)
         self.baud_dropdown.grid(row=4, column=2)
 
+        # unit
+
+        self.unit_label = ctk.CTkLabel(self, text="Weight unit:", font=("Helvetica", 20))
+        self.unit_label.grid(row=5, column=1)
+
+        self.unit_var = ctk.StringVar(value=self.settings["unit"])
+        self.unit_dropdown = ctk.CTkOptionMenu(self,
+                                               values=["lb", "kg"],
+                                               command= lambda _: self._update_setting(self.settings,
+                                                                                       "unit",
+                                                                                       self.unit_var),
+                                               variable=self.unit_var)
+        self.unit_dropdown.grid(row=5, column=2)
+
     def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
             print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())
             settings[setting_to_change] = value_to_change_to.get()

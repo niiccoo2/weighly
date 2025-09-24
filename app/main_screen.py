@@ -204,15 +204,19 @@ class MainScreen(ctk.CTkFrame):
         """
         self.weight: Any
         if self.settings["scale_mode"]:
-            weight = float(self.weight.cget("text").replace(" lbs.", ""))
+            try:
+                weight = float(self.weight.cget("text").replace(" lbs.", "")) # remove lbs.
+            except:
+                weight = float(self.weight.cget("text").replace(" kgs.", "")) # remove kgs.
 
             if self.settings["unit"] == "kg":
                 weight = weight*2.204623
-                print("Converted from kg to lb.")
+                weight = round(weight, 2)
+                print("Converted and rounded from kg to lb.")
             print(f"Current weight is {weight}")
             return weight
         else:
-            if not self.weight.get().replace(" lbs.", "").isdigit():
+            if not (self.weight.get().replace(" lbs.", "").isdigit() or self.weight.get().replace(" kgs.", "").isdigit()):
                 CTkMessagebox(
                     title="Error", 
                     message="Error, weight must be a number. Saved as 0.",
@@ -220,11 +224,16 @@ class MainScreen(ctk.CTkFrame):
                 )
                 return 0
             else:
-                weight = float(self.weight.get().replace(" lbs.", ""))
+                try:
+                    weight = float(self.weight.get().replace(" lbs.", "")) # remove lbs.
+                except:
+                    weight = float(self.weight.get().replace(" kgs.", "")) # remove kgs.
+
                 self.NameEntry.delete(0, "end")
                 if self.settings["unit"] == "kg":
                     weight = weight*2.204623
-                    print("Converted from kg to lb.")
+                    weight = round(weight, 2)
+                    print("Converted and rounded from kg to lb.")
                 print(f"Current weight is {weight}")
                 return weight
 

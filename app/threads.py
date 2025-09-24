@@ -23,13 +23,18 @@ def update_weight_thread(weighly):
         
         weight = round(weight, 2)
 
+        if main_screen.settings["unit"] == "kg":
+            unit = "kgs."
+        else:
+            unit = "lbs."
+
         # Need to find a way to make this say kg if it is kg
         def update_widget(w=weight_widget, wt=weight):
             if isinstance(w, ctk.CTkLabel):
-                w.configure(text=f"{wt} lbs.")
+                w.configure(text=f"{wt} {unit}")
             else:  # fallback if somehow it's an Entry
                 w.delete(0, "end")
-                w.insert(0, f"{wt} lbs.")
+                w.insert(0, f"{wt} {unit}")
 
         # Schedule the update on the main thread
         main_screen.after(0, update_widget)

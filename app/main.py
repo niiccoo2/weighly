@@ -9,9 +9,10 @@ from threads import update_running_total_thread, update_weight_thread
 class Weighly(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.settings = load_settings()
 
         ctk.set_appearance_mode("System")
-        ctk.set_default_color_theme("dark-blue")
+        ctk.set_default_color_theme(self.settings["theme"])
         self.title('Weighly')
         self.geometry('1000x500')
         self.resizable(True, True)
@@ -21,9 +22,8 @@ class Weighly(ctk.CTk):
         # self.SERIALPORT = "/dev/ttyUSB0"
         # self.BAUDRATE = 9600 # Not needed when reading from settings
 
-        self.settings = load_settings()
-        self.SERIALPORT = self.settings["SERIALPORT"]
-        self.BAUDRATE = self.settings["BAUDRATE"]
+        self.SERIALPORT = self.settings["SERIALPORT"] # I don't think we ever use this
+        self.BAUDRATE = self.settings["BAUDRATE"]     # 90% sure we always read stright from settings
 
 
         open(FILENAME, "a")  # make sure file exists

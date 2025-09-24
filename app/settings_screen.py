@@ -100,6 +100,20 @@ class SettingsScreen(ctk.CTkFrame):
                                                variable=self.unit_var)
         self.unit_dropdown.grid(row=5, column=2)
 
+        # theme
+
+        self.theme_label = ctk.CTkLabel(self, text="Theme (Restart to apply):", font=("Helvetica", 20))
+        self.theme_label.grid(row=6, column=1)
+
+        self.theme_var = ctk.StringVar(value=self.settings["theme"])
+        self.theme_dropdown = ctk.CTkOptionMenu(self,
+                                                values=["blue", "green", "dark-blue"],
+                                                command= lambda _: self._update_setting(self.settings,
+                                                                                        "theme",
+                                                                                        self.theme_var),
+                                                variable=self.theme_var)
+        self.theme_dropdown.grid(row=6, column=2)
+
     def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
             print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())
             settings[setting_to_change] = value_to_change_to.get()

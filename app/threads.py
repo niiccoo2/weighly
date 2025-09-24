@@ -23,6 +23,7 @@ def update_weight_thread(weighly):
         
         weight = round(weight, 2)
 
+        # Need to find a way to make this say kg if it is kg
         def update_widget(w=weight_widget, wt=weight):
             if isinstance(w, ctk.CTkLabel):
                 w.configure(text=f"{wt} lbs.")

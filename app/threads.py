@@ -17,6 +17,12 @@ def update_weight_thread(weighly):
         # Capture the current widget reference and weight in the lambda
         weight_widget = main_screen.weight
 
+        # convert to kg if in kg mode
+        if main_screen.settings["unit"] == "kg":
+            weight = weight*0.45359237
+        
+        weight = round(weight, 2)
+
         def update_widget(w=weight_widget, wt=weight):
             if isinstance(w, ctk.CTkLabel):
                 w.configure(text=f"{wt} lbs.")

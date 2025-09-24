@@ -199,9 +199,18 @@ class MainScreen(ctk.CTkFrame):
             threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
     
     def get_current_weight(self):
+        """
+        Grabs the weight from the correct location and returns in lbs.
+        """
         self.weight: Any
         if self.settings["scale_mode"]:
-            return float(self.weight.cget("text").replace(" lbs.", ""))
+            weight = float(self.weight.cget("text").replace(" lbs.", ""))
+
+            if self.settings["unit"] == "kg":
+                weight = weight*2.204623
+                print("Converted from kg to lb.")
+            print(f"Current weight is {weight}")
+            return weight
         else:
             if not self.weight.get().replace(" lbs.", "").isdigit():
                 CTkMessagebox(
@@ -213,5 +222,9 @@ class MainScreen(ctk.CTkFrame):
             else:
                 weight = float(self.weight.get().replace(" lbs.", ""))
                 self.NameEntry.delete(0, "end")
+                if self.settings["unit"] == "kg":
+                    weight = weight*2.204623
+                    print("Converted from kg to lb.")
+                print(f"Current weight is {weight}")
                 return weight
 

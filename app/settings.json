@@ -3,6 +3,6 @@
     "BAUDRATE": "9600",
     "theme": "dark-blue",
     "scale_mode": true,
-    "unit": "lb",
+    "unit": "kg",
     "keep_name": true
 }

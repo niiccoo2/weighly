@@ -6,7 +6,7 @@ class SettingsScreen(ctk.CTkFrame):
         super().__init__(parent)
         self.controller = controller
 
-        for i in range(8):
+        for i in range(2):
             self.columnconfigure(i, weight=1)
         
         for i in range(8):
@@ -26,7 +26,7 @@ class SettingsScreen(ctk.CTkFrame):
 
         # keep_name
         self.keep_name_label = ctk.CTkLabel(self, text="Keep name after submission:", font=("Helvetica", 20))
-        self.keep_name_label.grid(row=1, column=1)
+        self.keep_name_label.grid(row=1, column=0)
 
         self.keep_name_switch_var = ctk.BooleanVar(value=self.settings["keep_name"]) #init ctk var
         self.keep_name_switch = ctk.CTkSwitch(self,
@@ -37,11 +37,11 @@ class SettingsScreen(ctk.CTkFrame):
                                                variable=self.keep_name_switch_var,
                                                onvalue=True, 
                                                offvalue=False)
-        self.keep_name_switch.grid(row=1, column=2)
+        self.keep_name_switch.grid(row=1, column=1)
 
         # scale_mode
         self.scale_mode_label = ctk.CTkLabel(self, text="Use USB scale:", font=("Helvetica", 20))
-        self.scale_mode_label.grid(row=2, column=1)
+        self.scale_mode_label.grid(row=2, column=0)
 
         self.scale_mode_switch_var = ctk.BooleanVar(value=self.settings["scale_mode"]) #init ctk var
         self.scale_mode_switch = ctk.CTkSwitch(self,
@@ -52,12 +52,12 @@ class SettingsScreen(ctk.CTkFrame):
                                                variable=self.scale_mode_switch_var,
                                                onvalue=True, 
                                                offvalue=False)
-        self.scale_mode_switch.grid(row=2, column=2)
+        self.scale_mode_switch.grid(row=2, column=1)
 
         # port
 
         self.port_label = ctk.CTkLabel(self, text="Scale port:", font=("Helvetica", 20))
-        self.port_label.grid(row=3, column=1)
+        self.port_label.grid(row=3, column=0)
 
         self.port_var = ctk.StringVar(value=self.settings["SERIALPORT"]) #init ctk var
         self.port_dropdown = ctk.CTkOptionMenu(self,
@@ -70,12 +70,12 @@ class SettingsScreen(ctk.CTkFrame):
                                                # but we still need to do something with it, or else it gets mad
                                                # so we assign it to _ and do nothing with it
                                                variable=self.port_var)
-        self.port_dropdown.grid(row=3, column=2)
+        self.port_dropdown.grid(row=3, column=1)
 
         # baud rate
         
         self.baud_label = ctk.CTkLabel(self, text="Scale baudrate:", font=("Helvetica", 20))
-        self.baud_label.grid(row=4, column=1)
+        self.baud_label.grid(row=4, column=0)
 
         self.baud_var = ctk.StringVar(value=self.settings["BAUDRATE"]) #init ctk var
         self.baud_dropdown = ctk.CTkOptionMenu(self,
@@ -84,12 +84,12 @@ class SettingsScreen(ctk.CTkFrame):
                                                                                        "BAUDRATE",
                                                                                        self.baud_var),
                                                variable=self.baud_var)
-        self.baud_dropdown.grid(row=4, column=2)
+        self.baud_dropdown.grid(row=4, column=1)
 
         # unit
 
         self.unit_label = ctk.CTkLabel(self, text="Weight unit:", font=("Helvetica", 20))
-        self.unit_label.grid(row=5, column=1)
+        self.unit_label.grid(row=5, column=0)
 
         self.unit_var = ctk.StringVar(value=self.settings["unit"])
         self.unit_dropdown = ctk.CTkOptionMenu(self,
@@ -98,12 +98,12 @@ class SettingsScreen(ctk.CTkFrame):
                                                                                        "unit",
                                                                                        self.unit_var),
                                                variable=self.unit_var)
-        self.unit_dropdown.grid(row=5, column=2)
+        self.unit_dropdown.grid(row=5, column=1)
 
         # theme
 
         self.theme_label = ctk.CTkLabel(self, text="Theme (Restart to apply):", font=("Helvetica", 20))
-        self.theme_label.grid(row=6, column=1)
+        self.theme_label.grid(row=6, column=0)
 
         self.theme_var = ctk.StringVar(value=self.settings["theme"])
         self.theme_dropdown = ctk.CTkOptionMenu(self,
@@ -112,7 +112,7 @@ class SettingsScreen(ctk.CTkFrame):
                                                                                         "theme",
                                                                                         self.theme_var),
                                                 variable=self.theme_var)
-        self.theme_dropdown.grid(row=6, column=2)
+        self.theme_dropdown.grid(row=6, column=1)
 
     def _update_setting(self, settings, setting_to_change: str, value_to_change_to):
             print(f"{setting_to_change} toggled, current value:", value_to_change_to.get())

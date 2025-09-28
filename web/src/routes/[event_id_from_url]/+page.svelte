@@ -90,7 +90,7 @@
 	<div class="w-full p-4">
 		<!-- Title -->
 		<p class="text-center text-7xl" style="color: #99ccff; -webkit-text-stroke: 2px black; font-weight: 1000;">
-			Troop 30 - All Time Leaderboard
+			{pageTitle}
 		</p>
 	</div>
 	<div class="p-4 w-full max-w-4xl mx-auto text-center text-2xl">

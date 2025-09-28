@@ -13,8 +13,8 @@
 	
 	// Reactive page title updates whenever eventInfo changes
 	$: pageTitle = eventInfo?.name
-		? `Weighly - ${eventInfo.name} Leaderboard`
-		: "Weighly - Leaderboard";
+		? `${eventInfo.name} Leaderboard`
+		: "Leaderboard";
 
 	async function getLeaderboard() {
 		leaderboard = [...totals.map((item: any, i: number) => ({

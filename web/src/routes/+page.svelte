@@ -2,19 +2,23 @@
 	import { page } from '$app/stores';
 	import { onMount, tick } from 'svelte';
 
-	let leaderboard: any[] = [{ "rank": "???", "name": "Failure to fetch!", "category": "Leaderboard Fall back", "score_lbs": 0 }];
+	let leaderboard: any[] = [{ "rank": "???", "name": "Loading...", "category": "Leaderboard Fall back", "score_lbs": 0 }];
 	let kg_mode: string = "lbs";
 	let op_kg_mode: string = "kgs";
 	$: kgMode = $page.url.searchParams.has('kgs');
 
 	async function getLeaderboard() {
 		console.log("Fetching leaderboard…");
-		const res = await fetch("http://127.0.0.1:8000/1/summary");
-		console.log("Response status:", res.status);
-
+		const res = await fetch("https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/weights?event_id=eq.1&select=id,name,weight,type", {
+		headers: {
+			apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto",
+			Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto"
+		}
+		});
 		const data = await res.json();
-		console.log("Fetched data:", data);
-		leaderboard = [...data.totals.map((item: any, i: number) => ({
+		console.log("Fetched data:", data); // This logs your array
+
+		leaderboard = [...data.map((item: any, i: number) => ({
 			...item,
 			rank: i + 1,
 			score_lbs: item.weight,

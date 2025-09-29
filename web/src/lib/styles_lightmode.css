@@ -6,7 +6,7 @@
   --muted: #6b7280;
   --accent: #99ccff;
   --header-bg: rgba(255,255,255,0.8);
-  --header-border: rgba(0,0,0,0.06);
+  --header-border: #F5F5F7;
   --header-height: 64px;
   --glass-blur: 6px;
 }

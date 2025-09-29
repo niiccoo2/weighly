@@ -56,9 +56,9 @@
     <!-- you can replace the emoji with icons -->
     <button class="theme-toggle" on:click={toggleTheme} aria-pressed={isDark} aria-label="Toggle theme">
       {#if isDark}
-        Dark
+        <img src="/light_mode.png" alt="Light Mode Icon">
       {:else}
-        Light
+        <img src="/dark_mode.png" alt="Dark Mode Icon">
       {/if}
     </button>
   </div>

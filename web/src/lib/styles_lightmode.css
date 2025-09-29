@@ -1,7 +1,7 @@
 :root{
   /* Light theme variables */
   --bg: #F5F5F7;
-  --card-bg: #F5F5F7;
+  --card-bg: #CFCFCF;
   --text: #0f1724;
   --muted: #6b7280;
   --accent: #F72C25;
@@ -14,7 +14,7 @@
 /* Dark theme overrides when .dark is present on <html> */
 .dark {
   --bg: #000000;
-  --card-bg: #0b1220;
+  --card-bg: #262626;
   --text: #CFCFCF;
   --muted: #9ca3af;
   --accent: #F72C25;
@@ -78,6 +78,14 @@ body, .lightmode-background {
 .thick_text {
     color: var(--text);
     font-weight: 700;
+}
+
+.text {
+    color: var(--text);
+}
+
+.card {
+    background: var(--card-bg)
 }
 
 /* Nav area */

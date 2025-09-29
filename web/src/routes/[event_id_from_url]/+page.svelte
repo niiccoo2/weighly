@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Header from '$lib/Header.svelte';
+	import '$lib/styles_lightmode.css';
 	import { onMount, tick } from 'svelte';
 	export let data;
 
@@ -63,36 +64,16 @@
 
 </script>
 
-<style>
-  /* .bevel-box {
-    padding: 1.5rem;
-    background: #e0e0e0;
-    border-radius: 12px;
-    box-shadow: inset 4px 4px 8px #b8b8b8,
-                inset -4px -4px 8px #ffffff;
-    font-family: sans-serif;
-    text-align: center;
-  } */
-  .lightmode-background {
-	background-color: #F5F5F7;
-	/* background-color: aqua; */
-  }
-  .lightmode-foreground {
-	background-color: #ffffff;
-  }
-
-</style>
-
 <svelte:head>
 	<title>{pageTitle}</title>
 </svelte:head>
 
 <Header />
 
-<div class="lightmode-background" style="width: 100vw; height: 100vh;">
+<div class="background" style="width: 100vw; height: 100vh;">
 	<div class="w-full p-4">
 		<!-- Title -->
-		<p class="text-center text-7xl" style="color: #99ccff; -webkit-text-stroke: 2px black; font-weight: 1000;">
+		<p class="text-center text-7xl thick_text">
 			{pageTitle}
 		</p>
 	</div>

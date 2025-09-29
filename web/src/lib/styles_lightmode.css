@@ -71,6 +71,15 @@ body, .lightmode-background {
   font-weight: 700;
 }
 
+.background {
+    background-color: var(--bg);
+}
+
+.thick_text {
+    color: var(--text);
+    font-weight: 700;
+}
+
 /* Nav area */
 .topbar nav {
   display: flex;

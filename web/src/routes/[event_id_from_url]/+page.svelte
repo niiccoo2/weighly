@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Header from '$lib/Header.svelte';
 	import { onMount, tick } from 'svelte';
 	export let data;
 
@@ -85,6 +86,8 @@
 <svelte:head>
 	<title>{pageTitle}</title>
 </svelte:head>
+
+<Header />
 
 <div class="lightmode-background" style="width: 100vw; height: 100vh;">
 	<div class="w-full p-4">

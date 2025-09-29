@@ -5,6 +5,10 @@
 
 <Header />
 
+<svelte:head>
+	<title>Weighly</title>
+</svelte:head>
+
 <main>
   <slot />
 </main>

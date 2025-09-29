@@ -75,7 +75,7 @@
   }
 </script>
 
-<header class="topbar" aria-label="Top navigation">
+<header class="topbar h-16" aria-label="Top navigation">
   <div class="brand">
     {#if isDark}
         <a href="/"><img src="/weighly_dark_mode.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
@@ -90,24 +90,24 @@
 
   <div class="flex items-center gap-3 h-full">
     {#if user}
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 h-full">
         <span class="text-sm hidden md:inline">{user.email}</span>
         <button 
           on:click={handleLogout}
-          class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]"
+          class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4"
         >
           Logout
         </button>
       </div>
     {:else}
       <a href="/login"
-         class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]">
+         class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4">
         Login
       </a>
     {/if}
 
-    <div class="controls flex items-center">
-      <button class="theme-toggle flex items-center justify-center p-2 max-h-[70%]"
+    <div class="controls flex items-center h-full">
+      <button class="theme-toggle flex items-center justify-center rounded hover:scale-105 h-[70%] px-2"
               on:click={toggleTheme}
               aria-pressed={isDark} aria-label="Toggle theme">
         {#if isDark}

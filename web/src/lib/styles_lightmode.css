@@ -1,11 +1,11 @@
 :root{
   /* Light theme variables */
   --bg: #F5F5F7;
-  --card-bg: #ffffff;
+  --card-bg: #F5F5F7;
   --text: #0f1724;
   --muted: #6b7280;
-  --accent: #99ccff;
-  --header-bg: rgba(255,255,255,0.8);
+  --accent: #F72C25;
+  --header-bg: #CFCFCF;
   --header-border: #F5F5F7;
   --header-height: 64px;
   --glass-blur: 6px;
@@ -17,7 +17,7 @@
   --card-bg: #0b1220;
   --text: #CFCFCF;
   --muted: #9ca3af;
-  --accent: #4fb3ff;
+  --accent: #F72C25;
   --header-bg: #262626;
   --header-border: #000000;
 }
@@ -63,6 +63,12 @@ body, .lightmode-background {
   color: inherit;
   text-decoration: none;
   font-size: 1.125rem;
+}
+
+.accent_color_button {
+  background-color: var(--accent);
+  color: #0b1220;
+  font-weight: 700;
 }
 
 /* Nav area */

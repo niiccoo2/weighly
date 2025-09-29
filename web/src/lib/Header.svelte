@@ -52,14 +52,23 @@
     
   </nav>
 
-  <div class="controls">
-    <!-- you can replace the emoji with icons -->
-    <button class="theme-toggle" on:click={toggleTheme} aria-pressed={isDark} aria-label="Toggle theme">
+  <div class="flex items-center gap-3 h-full">
+  <a href="/login"
+     class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]">
+    Login
+  </a>
+
+  <div class="controls flex items-center">
+    <button class="theme-toggle flex items-center justify-center p-2 max-h-[70%]"
+            on:click={toggleTheme}
+            aria-pressed={isDark} aria-label="Toggle theme">
       {#if isDark}
-        <img src="/light_mode.png" alt="Light Mode Icon">
+        <img src="/light_mode.png" alt="Light Mode Icon" class="w-5 h-5">
       {:else}
-        <img src="/dark_mode.png" alt="Dark Mode Icon">
+        <img src="/dark_mode.png" alt="Dark Mode Icon" class="w-5 h-5">
       {/if}
     </button>
   </div>
+</div>
+
 </header>

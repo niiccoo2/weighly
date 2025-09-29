@@ -1,6 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { supabase } from '$lib/supabaseClient';
+  import { goto } from '$app/navigation';
+  import type { User } from '@supabase/supabase-js';
+  
   let isDark = false;
+  let user: User | null = null;
 
   // Decide initial theme:
   function detectInitial() {
@@ -14,7 +19,26 @@
   onMount(() => {
     isDark = detectInitial();
     document.documentElement.classList.toggle('dark', isDark);
+    
+    let subscription: { unsubscribe: () => void };
+    
+    // Check if user is already signed in
+    supabase.auth.getSession().then(({ data }) => {
+      user = data.session?.user || null;
+      
+      // Listen for auth changes
+      const authListener = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          user = session?.user || null;
+        }
+      );
+      
+      subscription = authListener.data.subscription;
+    });
+    
     // Optional: listen to system changes if user hasn't explicitly set a preference
+    let cleanupMediaQuery: (() => void) | undefined;
+    
     if (!localStorage.getItem('theme') && window.matchMedia) {
       const mq = window.matchMedia('(prefers-color-scheme: dark)');
       const handler = (e: MediaQueryListEvent) => {
@@ -22,9 +46,17 @@
         document.documentElement.classList.toggle('dark', isDark);
       };
       mq.addEventListener?.('change', handler);
-      // cleanup if this component ever unmounts
-      return () => mq.removeEventListener?.('change', handler);
+      
+      cleanupMediaQuery = () => {
+        mq.removeEventListener?.('change', handler);
+      };
     }
+    
+    // Return the cleanup function
+    return () => {
+      if (subscription) subscription.unsubscribe();
+      if (cleanupMediaQuery) cleanupMediaQuery();
+    };
   });
 
   function toggleTheme() {
@@ -35,6 +67,11 @@
     } catch (e) {
       // ignore private mode errors
     }
+  }
+  
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    goto('/');
   }
 </script>
 
@@ -49,26 +86,36 @@
 
   <nav aria-label="Main">
     <!-- Add links here -->
-    
   </nav>
 
   <div class="flex items-center gap-3 h-full">
-  <a href="/login"
-     class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]">
-    Login
-  </a>
+    {#if user}
+      <div class="flex items-center gap-2">
+        <span class="text-sm hidden md:inline">{user.email}</span>
+        <button 
+          on:click={handleLogout}
+          class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]"
+        >
+          Logout
+        </button>
+      </div>
+    {:else}
+      <a href="/login"
+         class="flex items-center justify-center accent_color_button p-4 rounded hover:scale-105 max-h-[70%]">
+        Login
+      </a>
+    {/if}
 
-  <div class="controls flex items-center">
-    <button class="theme-toggle flex items-center justify-center p-2 max-h-[70%]"
-            on:click={toggleTheme}
-            aria-pressed={isDark} aria-label="Toggle theme">
-      {#if isDark}
-        <img src="/light_mode.png" alt="Light Mode Icon" class="w-5 h-5">
-      {:else}
-        <img src="/dark_mode.png" alt="Dark Mode Icon" class="w-5 h-5">
-      {/if}
-    </button>
+    <div class="controls flex items-center">
+      <button class="theme-toggle flex items-center justify-center p-2 max-h-[70%]"
+              on:click={toggleTheme}
+              aria-pressed={isDark} aria-label="Toggle theme">
+        {#if isDark}
+          <img src="/light_mode.png" alt="Light Mode Icon" class="w-5 h-5">
+        {:else}
+          <img src="/dark_mode.png" alt="Dark Mode Icon" class="w-5 h-5">
+        {/if}
+      </button>
+    </div>
   </div>
-</div>
-
 </header>

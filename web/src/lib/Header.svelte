@@ -1,0 +1,65 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  let isDark = false;
+
+  // Decide initial theme:
+  function detectInitial() {
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (saved === 'dark') return true;
+    if (saved === 'light') return false;
+    // fall back to system preference
+    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  onMount(() => {
+    isDark = detectInitial();
+    document.documentElement.classList.toggle('dark', isDark);
+    // Optional: listen to system changes if user hasn't explicitly set a preference
+    if (!localStorage.getItem('theme') && window.matchMedia) {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      const handler = (e: MediaQueryListEvent) => {
+        isDark = e.matches;
+        document.documentElement.classList.toggle('dark', isDark);
+      };
+      mq.addEventListener?.('change', handler);
+      // cleanup if this component ever unmounts
+      return () => mq.removeEventListener?.('change', handler);
+    }
+  });
+
+  function toggleTheme() {
+    isDark = !isDark;
+    document.documentElement.classList.toggle('dark', isDark);
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (e) {
+      // ignore private mode errors
+    }
+  }
+</script>
+
+<header class="topbar" aria-label="Top navigation">
+  <div class="brand">
+    {#if isDark}
+        <a href="/"><img src="/weighly_dark_mode.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+    {:else}
+        <a href="/"><img src="/weighly_light_mode.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+    {/if}
+  </div>
+
+  <nav aria-label="Main">
+    <!-- Add links here -->
+    
+  </nav>
+
+  <div class="controls">
+    <!-- you can replace the emoji with icons -->
+    <button class="theme-toggle" on:click={toggleTheme} aria-pressed={isDark} aria-label="Toggle theme">
+      {#if isDark}
+        Dark
+      {:else}
+        Light
+      {/if}
+    </button>
+  </div>
+</header>

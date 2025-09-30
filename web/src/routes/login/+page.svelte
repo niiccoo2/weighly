@@ -19,6 +19,7 @@
           redirectTo: `${window.location.origin}/auth/callback`
         }
       });
+      console.log('Window location:', window.location.origin);
 
       if (signInError) throw signInError;
       

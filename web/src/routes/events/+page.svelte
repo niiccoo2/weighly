@@ -56,6 +56,15 @@
           </div>
         </a>
       {/each}
+      
     </div>
   {/if}
+  <a
+          href="/new_event"
+          class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block mt-4"
+        >
+          <div class="text-center">
+            <p class="text-2xl thick_text">New Event</p>
+          </div>
+        </a>
 </main>

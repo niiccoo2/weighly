@@ -19,7 +19,7 @@
           redirectTo: `${window.location.origin}/auth/callback`
         }
       });
-
+      
       if (signInError) throw signInError;
       
       // The user will be redirected to Google for authentication
@@ -31,7 +31,14 @@
     }
   }
 
-  goto('/events');
+  onMount(() => {
+    // check if already signed in and redirect
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        goto('/events');
+      }
+    });
+  });
 </script>
 
 <svelte:head>

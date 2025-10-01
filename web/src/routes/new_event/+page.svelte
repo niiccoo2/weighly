@@ -29,30 +29,60 @@
     console.log("Fetched events:", event_id);
     }
   
+  async function makeEventAction() {
+    if (!value.trim()) {
+      error = "Event name cannot be empty.";
+      return;
+    }
+    error = "";
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      error = "You must be logged in to create an event.";
+      return;
+    }
+    await makeEvent(session.user.id, value.trim(), null, null);
+    if (event_id) {
+      window.location.href = `/${event_id}`;
+    } else {
+      error = "Failed to create event. Please try again.";
+    }
+  }
+
+  export let value: string = "";
+  export let placeholder = "Name";
+  export let id = "name_input";
+  export let error = "";
 </script>
 
 <Header />
 
 <svelte:head>
-	<title>Weighly Events</title>
+	<title>New Event</title>
 </svelte:head>
 
 <main class="flex flex-col items-center mt-8">
-  <p class="text-xl font-semibold mb-4">Your Events:</p>
-  {#if events.length === 0}
-    <p>No events yet…</p>
-  {:else}
-    <div class="flex flex-col items-center space-y-4 w-full">
-      {#each events as event}
-        <a
-          href="/{event.event_id}"
-          class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block"
-        >
-          <div class="text-center">
-            <p class="text-2xl thick_text">{event.name}</p>
-          </div>
-        </a>
-      {/each}
+  <div class="flex flex-col items-center space-y-4 p-6 card rounded-xl shadow-lg">
+    <p class="text-2xl thick_text text-center">New event:</p>
+
+    <div class="w-full max-w-md">
+      <input
+        id={id}
+        bind:value
+        placeholder={placeholder}
+        class="w-full rounded textbox focus:outline-none text-2xl thick_text px-2 py-1"
+        aria-invalid={error ? "true" : "false"}
+        aria-describedby={error ? id + "-err" : undefined}
+      />
+      {#if error}
+        <p id={id + "-err"} class="text-sm text-red-600 mt-1">{error}</p>
+      {/if}
     </div>
-  {/if}
+
+    <button 
+      on:click={makeEventAction}
+      class="accent_color_button rounded hover:scale-105 px-4 py-2 transition-transform cursor-pointer"
+    >
+      Create Event
+    </button>
+  </div>
 </main>

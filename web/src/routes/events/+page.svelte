@@ -43,7 +43,7 @@
 <main class="flex flex-col items-center mt-8">
   <p class="text-xl font-semibold mb-4">Your Events:</p>
   {#if events.length === 0}
-    <p>No events yet…</p>
+    <p>No events yet. Are you signed in?</p>
   {:else}
     <div class="flex flex-col items-center space-y-4 w-full">
       {#each events as event}

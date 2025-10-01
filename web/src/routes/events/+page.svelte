@@ -40,16 +40,22 @@
 	<title>Weighly Events</title>
 </svelte:head>
 
-<main>
+<main class="flex flex-col items-center mt-8">
+  <p class="text-xl font-semibold mb-4">Your Events:</p>
   {#if events.length === 0}
     <p>No events yet…</p>
   {:else}
-    <ul>
+    <div class="flex flex-col items-center space-y-4 w-full">
       {#each events as event}
-        <li>
-          <strong>{event.name}</strong> (id: {event.event_id})
-        </li>
+        <a
+          href="/{event.event_id}"
+          class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block"
+        >
+          <div class="text-center">
+            <p class="text-2xl thick_text">{event.name}</p>
+          </div>
+        </a>
       {/each}
-    </ul>
+    </div>
   {/if}
 </main>

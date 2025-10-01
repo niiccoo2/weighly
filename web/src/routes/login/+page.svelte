@@ -56,7 +56,7 @@
       <button 
         on:click={signInWithGoogle}
         disabled={loading}
-        class="w-full flex items-center justify-center py-3 px-4 rounded-md shadow-sm accent_color_button hover:bg-gray-50 text-gray-700 font-medium hover:scale-105 transition-transform block"
+        class="w-full flex items-center justify-center py-3 px-4 rounded-md shadow-sm accent_color_button hover:bg-gray-50 text-gray-700 font-medium hover:scale-105 transition-transform block cursor-pointer"
       >
         <!-- <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="h-5 w-5 mr-2" /> -->
         {loading ? 'Signing in...' : 'Sign in with Google'}

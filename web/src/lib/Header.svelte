@@ -94,7 +94,7 @@
         <span class="text-sm hidden md:inline">{user.email}</span>
         <button 
           on:click={handleLogout}
-          class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4 transition-transform block"
+          class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4 transition-transform block cursor-pointer"
         >
           Logout
         </button>

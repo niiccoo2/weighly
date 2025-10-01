@@ -16,7 +16,7 @@
   --bg: #000000;
   --card-bg: #262626;
   --text: #CFCFCF;
-  --muted: #9ca3af;
+  --muted: #353535;
   --accent: #F72C25;
   --header-bg: #262626;
   --header-border: #000000;
@@ -86,6 +86,12 @@ body, .lightmode-background {
 
 .card {
     background: var(--card-bg)
+}
+
+.textbox {
+  background-color: var(--muted); /* background */
+  border: 1px solid var(--muted); /* border */
+  color: var(--text);             /* text */
 }
 
 /* Nav area */

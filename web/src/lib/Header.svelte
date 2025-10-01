@@ -108,7 +108,7 @@
     {/if}
 
     <div class="controls flex items-center h-full">
-      <button class="theme-toggle flex items-center justify-center rounded hover:scale-105 h-[70%] px-2"
+      <button class="theme-toggle flex items-center justify-center rounded hover:scale-105 h-[70%] px-2 transition-transform"
               on:click={toggleTheme}
               aria-pressed={isDark} aria-label="Toggle theme">
         {#if isDark}

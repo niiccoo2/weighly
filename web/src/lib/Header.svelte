@@ -94,14 +94,14 @@
         <span class="text-sm hidden md:inline">{user.email}</span>
         <button 
           on:click={handleLogout}
-          class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4"
+          class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4 transition-transform block"
         >
           Logout
         </button>
       </div>
     {:else}
       <a href="/login"
-         class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4">
+         class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4 transition-transform block">
         Login
       </a>
     {/if}

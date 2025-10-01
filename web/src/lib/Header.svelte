@@ -91,7 +91,8 @@
   <div class="flex items-center gap-3 h-full">
     {#if user}
       <div class="flex items-center gap-2 h-full">
-        <span class="text-sm hidden md:inline">{user.email}</span>
+        <!-- <span class="text-sm hidden md:inline">{user.email}</span> -->
+        <a class="text-sm hidden md:inline hover:underline" href="/events">{user.email}</a>
         <button 
           on:click={handleLogout}
           class="flex items-center justify-center accent_color_button rounded hover:scale-105 h-[70%] px-4 transition-transform block cursor-pointer"

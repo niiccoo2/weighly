@@ -81,18 +81,10 @@
 		<!-- Leaderboard -->
 
 		<table class="mx-auto border-separate border-spacing-y-4">
-			<thead>
-				<tr>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
 
 			<tbody>
 				{#each leaderboard.slice() as item}
-					<tr class="p-6 rounded-xl bg-gray-200 rounded-xl hover:shadow-[4px_4px_8px_#b8b8b8,-4px_-4px_8px_#ffffff] shadow-[2px_2px_4px_#b8b8b8,-2px_-2px_4px_#ffffff] text-center font-semibold hover:scale-105 lightmode-foreground">
+					<tr class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block">
 						<td class="px-4 py-2">{item.rank}.</td>
 						<td class="px-4 py-2">{item.name}</td>
 						<td class="px-2 py-2"  style="color: grey; font-size: 1rem;">{item.type}</td>

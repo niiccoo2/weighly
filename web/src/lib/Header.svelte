@@ -3,7 +3,34 @@
   import { supabase } from '$lib/supabaseClient';
   import { goto } from '$app/navigation';
   import type { User } from '@supabase/supabase-js';
+  import { browser } from '$app/environment';
   
+  let isMobile = false; // Mobile detection
+
+  onMount(() => {
+    if (!browser) return;
+
+    const mq = window.matchMedia('(max-width: 640px)');
+    const update = (e?: MediaQueryListEvent) => (isMobile = mq.matches);
+
+    update(); // set initial value
+
+    // Prefer modern addEventListener/removeEventListener if available.
+    if ((mq as any).addEventListener) {
+      (mq as any).addEventListener('change', update);
+      return () => {
+        (mq as any).removeEventListener('change', update);
+      };
+    }
+
+    // Legacy fallback (older browsers): use addListener/removeListener.
+    // Cast to any to avoid TypeScript deprecation diagnostics for the legacy API.
+    (mq as any).addListener(update);
+    return () => {
+      (mq as any).removeListener(update);
+    };
+  });
+
   let isDark = false;
   let user: User | null = null;
 
@@ -78,9 +105,17 @@
 <header class="topbar h-16" aria-label="Top navigation">
   <div class="brand">
     {#if isDark}
+      {#if isMobile}
+        <a href="/"><img src="/weighly_dark_mode_small.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+      {:else}
         <a href="/"><img src="/weighly_dark_mode.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+      {/if}
     {:else}
+      {#if isMobile}
+        <a href="/"><img src="/weighly_light_mode_small.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+      {:else}
         <a href="/"><img src="/weighly_light_mode.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
+      {/if}
     {/if}
   </div>
 

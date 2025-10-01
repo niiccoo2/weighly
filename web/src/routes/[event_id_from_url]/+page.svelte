@@ -45,22 +45,22 @@
 	});
 
 	function toggleUnits() {
-    if (kg_mode === "lbs") {
-        leaderboard = leaderboard.map(item => ({
-            ...item,
-            score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
-        }));
-        kg_mode = "kgs";
-        op_kg_mode = "lbs";
-    } else {
-        leaderboard = leaderboard.map(item => ({
-            ...item,
-            score_lbs: Math.round(item.score_lbs / 0.45359237 * 100) / 100
-        }));
-        kg_mode = "lbs";
-        op_kg_mode = "kgs";
-    }
-}
+		if (kg_mode === "lbs") {
+			leaderboard = leaderboard.map(item => ({
+				...item,
+				score_lbs: Math.round(item.score_lbs * 0.45359237 * 100) / 100
+			}));
+			kg_mode = "kgs";
+			op_kg_mode = "lbs";
+		} else {
+			leaderboard = leaderboard.map(item => ({
+				...item,
+				score_lbs: Math.round(item.score_lbs / 0.45359237 * 100) / 100
+			}));
+			kg_mode = "lbs";
+			op_kg_mode = "kgs";
+		}
+	}
 
 </script>
 
@@ -91,7 +91,7 @@
 			</thead>
 
 			<tbody>
-				{#each leaderboard.slice(0, 10) as item}
+				{#each leaderboard.slice() as item}
 					<tr class="p-6 rounded-xl bg-gray-200 rounded-xl hover:shadow-[4px_4px_8px_#b8b8b8,-4px_-4px_8px_#ffffff] shadow-[2px_2px_4px_#b8b8b8,-2px_-2px_4px_#ffffff] text-center font-semibold hover:scale-105 lightmode-foreground">
 						<td class="px-4 py-2">{item.rank}.</td>
 						<td class="px-4 py-2">{item.name}</td>

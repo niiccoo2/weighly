@@ -10,6 +10,7 @@
   let apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto";
 
   let total: number | null = null;
+  let save_success = "";
 
   async function saveWeight(name: string, weight: number , type: string | null) {
     console.log("Sending POST request to save weight");
@@ -115,6 +116,12 @@
       weight_input = "";
       name_error = "";
       weight_error = "";
+
+      save_success = "Saved successfully!";
+
+      setTimeout(() => {
+        save_success = "";
+      }, 3000);
     } else {
       weight_error = "Failed to create event. Please try again.";
     }
@@ -169,6 +176,9 @@
       />
       {#if weight_error}
         <p id={weight_id + "-err"} class="text-sm text-red-600 mt-1">{weight_error}</p>
+      {/if}
+      {#if save_success}
+        <p class="text-green-600 mt-2">{save_success}</p>
       {/if}
     </div>
 

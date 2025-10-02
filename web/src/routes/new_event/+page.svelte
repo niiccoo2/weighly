@@ -6,7 +6,7 @@
 
   let event_id: number | null = null;
 
-  async function makeEvent(user_id: string, name: string, type_options: string[] | null, custom_url: string | null) {
+  async function makeEvent(name: string, type_options: string[] | null, custom_url: string | null) {
     console.log("Sending POST request for new event");
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
@@ -40,7 +40,7 @@
       error = "You must be logged in to create an event.";
       return;
     }
-    await makeEvent(session.user.id, value.trim(), null, null);
+    await makeEvent(value.trim(), null, null);
     if (event_id) {
       window.location.href = `/${event_id}`;
     } else {

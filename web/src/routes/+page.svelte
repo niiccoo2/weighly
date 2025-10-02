@@ -97,8 +97,6 @@
   </button>
 </main>
 
-<Footer />
-
 <style>
   .rotator {
     white-space: nowrap;

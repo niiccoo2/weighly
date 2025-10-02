@@ -7,6 +7,7 @@
 
   const eventId = parseInt(params.event_id_from_url);
 
+  let apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto";
 
   let total: number | null = null;
 
@@ -18,7 +19,7 @@
     const res = await fetch("https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/add_weight", {
       method: "POST",
       headers: {
-        apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto",
+        apikey: apikey,
         Authorization: `Bearer ${session.access_token}`,
         "Content-Type": "application/json"
       },

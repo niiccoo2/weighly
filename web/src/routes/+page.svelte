@@ -55,8 +55,6 @@
   onDestroy(() => clearInterval(interval));
 </script>
 
-<Header />
-
 <main class="flex flex-col items-center justify-center h-[80vh] text-center space-y-6">
   <h1 class="text-4xl md:text-6xl thick_text">
     Save weights of

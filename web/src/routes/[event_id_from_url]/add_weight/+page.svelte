@@ -138,8 +138,6 @@
   export let weight_error = "";
 </script>
 
-<Header />
-
 <svelte:head>
 	<title>Add Weight</title>
 </svelte:head>

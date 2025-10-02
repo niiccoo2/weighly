@@ -54,8 +54,6 @@
   export let error = "";
 </script>
 
-<Header />
-
 <svelte:head>
 	<title>New Event</title>
 </svelte:head>

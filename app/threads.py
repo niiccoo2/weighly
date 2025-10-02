@@ -12,16 +12,20 @@ def update_weight_thread(weighly):
     while scale_mode:
         scale_mode = main_screen.settings["scale_mode"]
         # Get the weight from the scale
-        weight = main_screen.get_serial(main_screen.settings["SERIALPORT"], main_screen.settings["BAUDRATE"], "W")
+        raw_weight = main_screen.get_serial(main_screen.settings["SERIALPORT"], main_screen.settings["BAUDRATE"], "W")
+
+        # Store raw weight for precision (before any rounding or unit conversion)
+        main_screen.raw_weight = raw_weight
 
         # Capture the current widget reference and weight in the lambda
         weight_widget = main_screen.weight
 
-        # convert to kg if in kg mode
+        # convert to kg if in kg mode and round for display
+        display_weight = raw_weight
         if main_screen.settings["unit"] == "kg":
-            weight = weight*0.45359237
+            display_weight = display_weight*0.45359237
         
-        weight = round(weight, 2)
+        display_weight = round(display_weight, 2)
 
         if main_screen.settings["unit"] == "kg":
             unit = "kgs."
@@ -29,7 +33,7 @@ def update_weight_thread(weighly):
             unit = "lbs."
 
         # Need to find a way to make this say kg if it is kg
-        def update_widget(w=weight_widget, wt=weight):
+        def update_widget(w=weight_widget, wt=display_weight):
             if isinstance(w, ctk.CTkLabel):
                 w.configure(text=f"{wt} {unit}")
             else:  # fallback if somehow it's an Entry

@@ -1,26 +1,18 @@
 # Weighly
 
+![Hackatime stats](https://hackatime-badge.hackclub.com/U090JSHV8QJ/weighly)
+
 Weighly is a service to weigh things, it was originally meant for food, but it works for anything really.
+Weighly is version 4 of Troop 30's scale program for food drives. On our last food drive we collected and tracked over 2 tons of food!
 
-Weighly is in a very early version right now, so most NEW feautres will not be in issues yet, and drastic changes many happen at any time.
+To use Weighly, go to [weighly.app](https://weighly.app) and make an account. Once you have an account you can make a new event and start adding weights!
 
-## How to run
+Features to be added:
 
-If someone wants to make this smoother, be my guest, but we are probably going to be scrapping the python backend for suprabase if it can do what wee need.
+- Set up python app for use with physical scale
+- delete events
+- add other admin to events
+- custom urls
+- more uniform code
 
-First clone the repo.
-```shell
-git clone https://github.com/niiccoo2/weighly
-```
-
-Then open the server code on one screen and app on other. To start the backend, run this from server directory.
-```shell
-uvicorn main:app --reload
-```
-
-Then run the python file for the app.
-```shell
-python3 main.py
-# -- OR --
-python3 ./app/main.py
-```
+Weighly uses supabase for backend and the svelte site is hosted on vercel.

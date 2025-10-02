@@ -34,19 +34,20 @@
     }
   
   function handleInput(event: Event) {
-    // Remove any non-numeric characters except decimal point
-    const cleanedValue = (event.target as HTMLInputElement).value.replace(/[^0-9.]/g, "");
+    const input = event.target as HTMLInputElement;
     
-    // Convert to number or set to null if empty
-    weight_value = cleanedValue === "" ? null : Number(cleanedValue);
+    // Keep only digits and first dot
+    let value = input.value.replace(/[^0-9.]/g, "").replace(/\.(?=.*\.)/g, "");
+    weight_input = value; // update input string
 
-    // Optional: validate number format
-    if (weight_value !== null && isNaN(weight_value)) {
-      weight_error = "Invalid number";
-    } else {
-      weight_error = "";
-    }
+    // Convert to number or null
+    weight_value = value === "" || value === "." ? null : Number(value);
+
+    // Validate
+    weight_error = weight_value === null || isNaN(weight_value) ? "Invalid number" : "";
   }
+
+
 
   async function saveWeightAction() {
     if (!name_value.trim()) {
@@ -78,6 +79,7 @@
   export let name_id = "name_input";
   export let name_error = "";
 
+  export let weight_input: string = "";
   export let weight_value: number | null = null;
   export let weight_id = "weight_input";
   export let weight_error = "";
@@ -112,7 +114,7 @@
     <div class="w-full max-w-md">
       <input
         id={weight_id}
-        bind:value={weight_value}
+        bind:value={weight_input}
         on:input={handleInput}
         placeholder="Weight"
         class="w-full rounded textbox focus:outline-none text-2xl thick_text px-2 py-1"

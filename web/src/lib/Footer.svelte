@@ -61,7 +61,7 @@
 
       <!-- Social / actions (Email + GitHub only) -->
       <div class="flex items-center gap-3">
-        <a href="mailto:contact@weighly.com" aria-label="Email Weighly" class="opacity-80 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[--accent-color] rounded p-1">
+        <a href="mailto:contact@weighly.app" aria-label="Email Weighly" class="opacity-80 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[--accent-color] rounded p-1">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm0 0 8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -78,7 +78,7 @@
       <p>&copy; {year} Nico Smith &amp; Ben Elliott. All rights reserved.</p>
       <p>
         <span class="mr-1">Need help?</span>
-        <a href="mailto:contact@weighly.com" class="accent_color underline underline-offset-2">contact@weighly.com</a>
+        <a href="mailto:contact@weighly.app" class="accent_color underline underline-offset-2">contact@weighly.app</a>
       </p>
     </div>
   </div>

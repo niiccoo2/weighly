@@ -1,8 +1,44 @@
 <script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+
   const year = new Date().getFullYear();
+
+  // Measure footer height so we can add a spacer above it,
+  // preventing overlap and ensuring at least 1rem (spacing-4) gap.
+  let footerEl: HTMLElement;
+  let footerHeight = 0;
+
+  let ro: ResizeObserver | undefined;
+
+  function updateHeight() {
+    if (footerEl) {
+      footerHeight = footerEl.offsetHeight;
+    }
+  }
+
+  onMount(() => {
+    updateHeight();
+    if ('ResizeObserver' in window) {
+      ro = new ResizeObserver(() => updateHeight());
+      ro.observe(footerEl);
+    }
+    window.addEventListener('resize', updateHeight);
+  });
+
+  onDestroy(() => {
+    ro?.disconnect();
+    window.removeEventListener('resize', updateHeight);
+  });
 </script>
 
-<footer class="w-full border-t border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-black/40 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+<!-- Spacer to keep content from being covered by the fixed footer.
+     Ensures a minimum 1rem (spacing-4) gap above the footer. -->
+<div class="footer-spacer" style="--footer-h: {footerHeight}px" aria-hidden="true"></div>
+
+<footer
+  bind:this={footerEl}
+  class="fixed inset-x-0 bottom-0 z-40 w-full border-t border-gray-200/70 dark:border-gray-800/70 bg-white/70 dark:bg-black/40 backdrop-blur supports-[backdrop-filter]:bg-white/60"
+>
   <div class="mx-auto max-w-6xl px-5 py-8">
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
       <!-- Brand + tagline -->
@@ -38,4 +74,14 @@
 
 <style>
   .accent_color { color: var(--accent-color); }
+
+  /* Spacer equals footer height + 1rem (Tailwind spacing-4) */
+  .footer-spacer {
+    height: calc(var(--footer-h, 0px) + 1rem);
+  }
+
+  /* Optional: respect iOS safe area at the bottom */
+  footer > div {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
 </style>

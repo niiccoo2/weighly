@@ -33,6 +33,37 @@
     total = await res.json();
     console.log("Fetched total:", total);
     }
+
+  async function getAllowedEvents(): Promise<number[]> {
+    console.log("Fetching allowed events");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return [];
+
+    const res = await fetch(
+      "https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/get_allowed_events",
+      {
+        method: "POST",
+        headers: {
+          apikey: apikey,
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_id: session.user.id })
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch allowed events:", await res.json());
+      return [];
+    }
+
+    const events = await res.json();
+    console.log("Fetched events:", events);
+
+    // return an array of event IDs
+    return events.map((e: any) => e.event_id);
+  }
+
   
   function handleInput(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -55,26 +86,40 @@
       name_error = "Event name cannot be empty.";
       return;
     }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       weight_error = "You must be logged in to save weights.";
       return;
     }
+
     if (weight_value === null || isNaN(weight_value)) {
       weight_error = "Weight must be a valid number.";
       return;
     }
+
+    // Check if the user is allowed to save to this event
+    const allowedEventIds = await getAllowedEvents();
+    if (!allowedEventIds.includes(eventId)) {
+      weight_error = "You are not allowed to add weights to this event.";
+      return;
+    }
+
     await saveWeight(name_value.trim(), weight_value, null);
+
     if (total) {
       console.log(`Weight saved successfully to ${eventId}`);
+      // Reset form
+      name_value = "";
+      weight_value = null;
+      weight_input = "";
+      name_error = "";
+      weight_error = "";
     } else {
       weight_error = "Failed to create event. Please try again.";
     }
-    name_value = "";
-    weight_value = null;
-    name_error = "";
-    weight_error = "";
   }
+
 
   export let name_value: string = "";
   export let name_id = "name_input";

@@ -65,6 +65,10 @@ body, .lightmode-background {
   font-size: 1.125rem;
 }
 
+.accent_color {
+    color: var(--accent);
+}
+
 .accent_color_button {
   background-color: var(--accent);
   color: #0b1220;

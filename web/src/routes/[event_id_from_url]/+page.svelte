@@ -3,10 +3,13 @@
 	import Header from '$lib/Header.svelte';
 	import '$lib/styles_lightmode.css';
 	import { onMount, tick } from 'svelte';
+	import { supabase } from '$lib/supabaseClient';
 	export let data;
 
+	let apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto";
+
 	let eventInfo = data.eventInfo;
-  	let totals = data.totals ?? [];
+	let totals = data.totals ?? [];
 
 	let leaderboard: any[] = [{ "rank": "???", "name": "Loading...", "category": "Leaderboard Fall back", "score_lbs": 0 }];
 	let kg_mode: string = "lbs";
@@ -62,6 +65,44 @@
 		}
 	}
 
+	async function getAllowedEvents(): Promise<number[]> {
+    console.log("Fetching allowed events");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return [];
+
+    const res = await fetch(
+      "https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/get_allowed_events",
+      {
+        method: "POST",
+        headers: {
+          apikey: apikey,
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_id: session.user.id })
+      }
+    );
+
+    if (!res.ok) {
+      console.error("Failed to fetch allowed events:", await res.json());
+      return [];
+    }
+
+    const events = await res.json();
+    console.log("Fetched events:", events);
+
+    // return an array of event IDs
+    return events.map((e: any) => e.event_id);
+  }
+  
+  let allowedToSave = false;
+
+  onMount(async () => {
+  const allowedEventIds = await getAllowedEvents();
+  if (allowedEventIds.includes(eventInfo.event_id)) {
+  	allowedToSave = true;
+}
+});
 </script>
 
 <svelte:head>
@@ -70,37 +111,20 @@
 
 <Header />
 
-<!-- <div class="background" style="width: 100vw; height: 100vh;">
-	<div class="w-full p-4">
-		
-		<p class="text-center text-7xl thick_text">
-			{pageTitle}
-		</p>
-	</div>
-	<div class="p-4 w-full max-w-4xl mx-auto text-center text-2xl">
-		
+<main class="flex flex-col items-center mt-8 w-full max-w-4xl mx-auto">
+  <!-- Title centered with button top-right -->
+  <div class="relative w-full mb-4">
+    <p class="text-xl font-semibold text-center">{pageTitle}:</p>
 
-		<table class="mx-auto border-separate border-spacing-y-4">
+    {#if allowedToSave}
+	  <a href="/{eventInfo.event_id}/add_weight"
+         class="absolute right-4 top-0 accent_color_button rounded px-4 py-2 hover:scale-105 transition-transform cursor-pointer">
+        Save Weights
+      </a>
+    {/if}
+  </div>
 
-			<tbody>
-				{#each leaderboard.slice() as item}
-					<tr class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block">
-						<td class="px-4 py-2">{item.rank}.</td>
-						<td class="px-4 py-2">{item.name}</td>
-						<td class="px-2 py-2"  style="color: grey; font-size: 1rem;">{item.type}</td>
-						<td class="px-4 py-2">
-						{item.score_lbs} 
-						<button on:click={() => toggleUnits()}>{kg_mode}</button>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-</div> -->
-
-<main class="flex flex-col items-center mt-8">
-  <p class="text-xl font-semibold mb-4">{pageTitle}:</p>
+  <!-- Leaderboard -->
   {#if leaderboard.length === 0}
     <p>No weights yet.</p>
   {:else}
@@ -108,26 +132,26 @@
       {#each leaderboard.slice() as item}
         <div class="w-full max-w-md p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform block">
           <div class="flex items-center px-4">
-			<!-- left group: rank + name -->
-			<div class="flex items-center gap-2">
-				<p class="m-0 text-2xl font-bold">{item.rank}.</p>
-				<p class="m-0 text-2xl font-bold">{item.name}</p>
-			</div>
+            <div class="flex items-center gap-2">
+              <p class="m-0 text-2xl font-bold">{item.rank}.</p>
+              <p class="m-0 text-2xl font-bold">{item.name}</p>
+            </div>
 
-			<!-- center: expands to fill space; invisible keeps its box when empty -->
-			<p class="m-0 text-2xl font-bold flex-1 text-center" class:invisible={!item.middle}>
-				{item.middle}
-			</p>
+            <p class="m-0 text-2xl font-bold flex-1 text-center" class:invisible={!item.middle}>
+              {item.middle}
+            </p>
 
-			<!-- right: score + toggle button (always at far right) -->
-			<div class="flex items-center space-x-2">
-				<p class="m-0 text-2xl font-bold">
-				{item.score_lbs} <button class="text-sm cursor-pointer" on:click={() => toggleUnits()}>{kg_mode}</button>
-				</p>
-			</div>
-		  </div>
+            <div class="flex items-center space-x-2">
+              <p class="m-0 text-2xl font-bold">
+                {item.score_lbs} 
+                <button class="text-sm cursor-pointer" on:click={() => toggleUnits()}>{kg_mode}</button>
+              </p>
+            </div>
+          </div>
         </div>
       {/each}
     </div>
   {/if}
 </main>
+
+

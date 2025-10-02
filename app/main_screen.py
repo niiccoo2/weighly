@@ -198,7 +198,7 @@ class MainScreen(ctk.CTkFrame):
         if self.settings["scale_mode"]:
             threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
     
-    def get_current_weight(self):
+    def get_current_weight(self, rounded=True):
         """
         Grabs the weight from the correct location and returns in lbs.
         """
@@ -211,7 +211,8 @@ class MainScreen(ctk.CTkFrame):
 
             if self.settings["unit"] == "kg":
                 weight = weight*2.204623
-                weight = round(weight, 2)
+                if rounded == True:
+                    weight = round(weight, 2)
                 print("Converted and rounded from kg to lb.")
             print(f"Current weight is {weight}")
             return weight
@@ -232,7 +233,8 @@ class MainScreen(ctk.CTkFrame):
                 self.NameEntry.delete(0, "end")
                 if self.settings["unit"] == "kg":
                     weight = weight*2.204623
-                    weight = round(weight, 2)
+                    if rounded == True:
+                        weight = round(weight, 2)
                     print("Converted and rounded from kg to lb.")
                 print(f"Current weight is {weight}")
                 return weight

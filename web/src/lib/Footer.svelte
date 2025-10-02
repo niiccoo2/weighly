@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
 
   const year = new Date().getFullYear();
 
@@ -17,17 +18,28 @@
   }
 
   onMount(() => {
+    if (!browser) return; // SSR safety
+
     updateHeight();
-    if ('ResizeObserver' in window) {
-      ro = new ResizeObserver(() => updateHeight());
+
+    if (typeof ResizeObserver !== 'undefined' && footerEl) {
+      ro = new ResizeObserver(updateHeight);
       ro.observe(footerEl);
     }
-    window.addEventListener('resize', updateHeight);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', updateHeight);
+    }
   });
 
   onDestroy(() => {
+    if (!browser) return;
+
     ro?.disconnect();
-    window.removeEventListener('resize', updateHeight);
+
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', updateHeight);
+    }
   });
 </script>
 

@@ -34,8 +34,6 @@
   });
 </script>
 
-<Header />
-
 <svelte:head>
 	<title>Weighly Events</title>
 </svelte:head>

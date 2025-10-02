@@ -37,8 +37,6 @@
   <title>Login - Weighly</title>
 </svelte:head>
 
-<Header />
-
 <div class="flex items-center justify-center min-h-[70vh]">
   <div class="w-full max-w-md p-8 space-y-8 card rounded-xl shadow-lg">
     <div class="text-center">

@@ -109,8 +109,6 @@
 	<title>{pageTitle}</title>
 </svelte:head>
 
-<Header />
-
 <main class="flex flex-col items-center mt-8 w-full max-w-4xl mx-auto">
   <!-- Title centered with button top-right -->
   <div class="relative w-full mb-4">

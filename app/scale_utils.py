@@ -56,6 +56,6 @@ def get_serial(serialport, buadrate, stringToSend):
 
 # Simulated scale data for testing
 def get_serial_dummy(serialport, buadrate, stringToSend):
-    #weight = randint(0, 200)
-    weight = 50
+    weight = randint(0, 200)
+    #weight = 50
     return weight

@@ -49,7 +49,7 @@ def update_running_total_thread(weighly):
     while True:
         try:
             total = read_running_total(1)
-            weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].running_total.set(str(total)))
+            weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].running_total.set(str(round(total, 2))))
         except Exception as e:
             print("Error updating total:", e)
         time.sleep(10)

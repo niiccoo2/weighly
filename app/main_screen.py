@@ -34,6 +34,7 @@ class MainScreen(ctk.CTkFrame):
         #self.saved_weight = ctk.DoubleVar(self) # Might be able to remove this
         self.person_type = ctk.StringVar(self, "Scout")
         self.running_total = ctk.StringVar(self)
+        self.raw_weight = 0.0  # Store unrounded weight for precision
 
         # Buttons
 
@@ -50,7 +51,7 @@ class MainScreen(ctk.CTkFrame):
             font=("Helvetica", 60), 
             command=lambda: save_weight(1, # Might want to change this to first run a function that makes sure all the inputs are correct
                                         self.NameEntry.get() if self.settings["keep_name"] else self._clear_name_input(),
-                                        self.get_current_weight(),
+                                        self.get_current_weight(False),
                                         self.person_type.get()))
             # self.name.get() will NOT clear the name
         self.btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
@@ -191,6 +192,9 @@ class MainScreen(ctk.CTkFrame):
             self.weight.delete(0, "end")
             self.weight.insert(0, "")
         
+        # Reset raw weight
+        self.raw_weight = 0.0
+        
         # Make sure everything is correct size
         self.adjust_font_size()
 
@@ -204,15 +208,15 @@ class MainScreen(ctk.CTkFrame):
         """
         self.weight: Any
         if self.settings["scale_mode"]:
-            try:
-                weight = float(self.weight.cget("text").replace(" lbs.", "")) # remove lbs.
-            except:
-                weight = float(self.weight.cget("text").replace(" kgs.", "")) # remove kgs.
-
+            # Use raw_weight for precision, not the rounded display value
+            weight = self.raw_weight
+            
             if self.settings["unit"] == "kg":
                 weight = weight*2.204623
                 weight = round(weight, 2)
                 print("Converted and rounded from kg to lb.")
+            elif rounded == True:
+                weight = round(weight, 2)
             print(f"Current weight is {weight}")
             return weight
         else:

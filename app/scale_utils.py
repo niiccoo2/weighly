@@ -1,5 +1,5 @@
 import serial # pip install pyserial
-from random import randint
+from random import uniform
 
 def get_serial(serialport, buadrate, stringToSend):
     ser = serial.Serial(serialport, buadrate, timeout =1) #Real scale
@@ -56,6 +56,6 @@ def get_serial(serialport, buadrate, stringToSend):
 
 # Simulated scale data for testing
 def get_serial_dummy(serialport, buadrate, stringToSend):
-    #weight = randint(0, 200)
-    weight = 50
+    weight = uniform(0, 200)
+    #weight = 50
     return weight

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import Header from '$lib/Header.svelte';
-  import Footer from '$lib/Footer.svelte';
   import '$lib/styles_lightmode.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { fly } from 'svelte/transition';

@@ -3,6 +3,7 @@
   import { supabase } from '$lib/supabaseClient';
   import Header from '$lib/Header.svelte';
   import '$lib/styles_lightmode.css';
+  import { isDark } from '$lib/stores/theme';
 
   interface Event {
     name: string;
@@ -45,24 +46,31 @@
   {:else}
     <div class="flex flex-col items-center space-y-4 w-full">
       {#each events as event}
-        <div class="relative w-full max-w-md">
+        <div class="relative w-full max-w-md group">
+          <!-- Main clickable card -->
           <a
             href="/{event.event_id}"
-            class="block p-4 card rounded-xl shadow-lg hover:scale-105 transition-transform"
+            class="block p-4 card rounded-xl shadow-lg transition-transform group-hover:scale-105"
           >
             <div class="text-center">
               <p class="text-2xl thick_text">{event.name}</p>
             </div>
-
-            <button
-              class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md flex items-center gap-2 cursor-pointer"
-            >
-              <img src="edit-icon.png" alt="Edit" class="w-4 h-4">
-            </button>
           </a>
 
-          
+          <!-- Settings icon that expands with the card -->
+          <a
+            href="/{event.event_id}/settings"
+            class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md flex items-center gap-2 cursor-pointer transition-transform group-hover:scale-115"
+          >
+          {#if $isDark}
+            <img src="settings_icon_dark_mode.png" alt="Settings" class="w-4 h-4">
+          {:else}
+            <img src="settings_icon_light_mode.png" alt="Settings" class="w-4 h-4">
+          {/if}
+          </a>
         </div>
+
+
 
       {/each}
       

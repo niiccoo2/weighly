@@ -4,8 +4,10 @@
   import { goto } from '$app/navigation';
   import type { User } from '@supabase/supabase-js';
   import { browser } from '$app/environment';
+  import { isDark } from '$lib/stores/theme';
   
   let isMobile = false; // Mobile detection
+  let user: User | null = null;
 
   onMount(() => {
     if (!browser) return;
@@ -23,32 +25,16 @@
       };
     }
 
-    // Legacy fallback (older browsers): use addListener/removeListener.
-    // Cast to any to avoid TypeScript deprecation diagnostics for the legacy API.
+    // Legacy fallback (older browsers)
     (mq as any).addListener(update);
     return () => {
       (mq as any).removeListener(update);
     };
   });
 
-  let isDark = false;
-  let user: User | null = null;
-
-  // Decide initial theme:
-  function detectInitial() {
-    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (saved === 'dark') return true;
-    if (saved === 'light') return false;
-    // fall back to system preference
-    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-
   onMount(() => {
-    isDark = detectInitial();
-    document.documentElement.classList.toggle('dark', isDark);
-    
     let subscription: { unsubscribe: () => void };
-    
+
     // Check if user is already signed in
     supabase.auth.getSession().then(({ data }) => {
       user = data.session?.user || null;
@@ -62,49 +48,22 @@
       
       subscription = authListener.data.subscription;
     });
-    
-    // Optional: listen to system changes if user hasn't explicitly set a preference
-    let cleanupMediaQuery: (() => void) | undefined;
-    
-    if (!localStorage.getItem('theme') && window.matchMedia) {
-      const mq = window.matchMedia('(prefers-color-scheme: dark)');
-      const handler = (e: MediaQueryListEvent) => {
-        isDark = e.matches;
-        document.documentElement.classList.toggle('dark', isDark);
-      };
-      mq.addEventListener?.('change', handler);
-      
-      cleanupMediaQuery = () => {
-        mq.removeEventListener?.('change', handler);
-      };
-    }
-    
-    // Return the cleanup function
+
     return () => {
       if (subscription) subscription.unsubscribe();
-      if (cleanupMediaQuery) cleanupMediaQuery();
     };
   });
 
-  function toggleTheme() {
-    isDark = !isDark;
-    document.documentElement.classList.toggle('dark', isDark);
-    try {
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    } catch (e) {
-      // ignore private mode errors
-    }
-  }
-  
   async function handleLogout() {
     await supabase.auth.signOut();
     goto('/');
   }
 </script>
 
+
 <header class="topbar h-16" aria-label="Top navigation">
   <div class="brand">
-    {#if isDark}
+    {#if $isDark}
       {#if isMobile}
         <a href="/"><img src="/weighly_dark_mode_small.png" alt="Weighly" style="height: 300%; max-height: 3rem; width: auto;"></a>
       {:else}
@@ -144,9 +103,8 @@
 
     <div class="controls flex items-center h-full">
       <button class="theme-toggle flex items-center justify-center rounded hover:scale-105 h-[70%] px-2 transition-transform"
-              on:click={toggleTheme}
-              aria-pressed={isDark} aria-label="Toggle theme">
-        {#if isDark}
+              on:click={() => isDark.update(v => !v)}>
+        {#if $isDark}
           <img src="/light_mode.png" alt="Light Mode Icon" class="w-5 h-5">
         {:else}
           <img src="/dark_mode.png" alt="Dark Mode Icon" class="w-5 h-5">

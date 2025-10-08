@@ -53,13 +53,15 @@
             <div class="text-center">
               <p class="text-2xl thick_text">{event.name}</p>
             </div>
+
+            <button
+              class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md flex items-center gap-2 cursor-pointer"
+            >
+              <img src="edit-icon.png" alt="Edit" class="w-4 h-4">
+            </button>
           </a>
 
-          <button
-            class="absolute top-1/2 right-3 -translate-y-1/2 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-          >
-            Edit
-          </button>
+          
         </div>
 
       {/each}

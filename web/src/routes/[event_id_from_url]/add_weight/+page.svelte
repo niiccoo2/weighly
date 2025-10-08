@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabaseClient';
-  import Header from '$lib/Header.svelte';
   import '$lib/styles_lightmode.css';
   export let params;
 

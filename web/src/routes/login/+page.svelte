@@ -1,8 +1,6 @@
 <script lang="ts">
   import { supabase } from '$lib/supabaseClient';
-  import Header from '$lib/Header.svelte';
   import '$lib/styles_lightmode.css';
-  import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
   let loading: boolean = false;

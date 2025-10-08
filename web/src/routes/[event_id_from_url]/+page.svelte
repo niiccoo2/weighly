@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Header from '$lib/Header.svelte';
 	import '$lib/styles_lightmode.css';
 	import { onMount, tick } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';

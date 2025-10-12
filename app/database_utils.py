@@ -2,11 +2,22 @@ import datetime
 from CTkMessagebox import CTkMessagebox
 from datetime import datetime
 import requests
+import webbrowser
+import http.server
+import socketserver
+import urllib.parse
+import json
 from supabase import create_client, Client
+import threading
+from typing import cast
+from gotrue.types import CodeExchangeParams
 
-SUPABASE_URL = 
-SUPABASE_KEY =
+SUPABASE_URL = "https://oifjrkxhjrtwlrancdho.supabase.co"
+SUPABASE_KEY = "sb_publishable_DruCqbBOsfUmleFtZkKtxw_dTjPQwfz"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+PORT = 5000
+REDIRECT_URI = f"http://localhost:{PORT}"
 
 FILENAME="./weighly_backup.csv"
 
@@ -111,5 +122,76 @@ def read_running_total(event: int) -> int:
     #     return 0
 
 def sign_in_supabase():
-    response = supabase.auth.sign_in_with_oauth(
-        {"provider": "github"})
+    """
+    Signs in the user using Google OAuth with Supabase by running a temporary
+    HTTP server in a separate thread to handle the redirect.
+    """
+    # Add explicit type hints to satisfy the static type checker
+    auth_code_holder: dict[str, str | None] = {"code": None}
+    server_thread: threading.Thread | None = None
+    httpd: socketserver.TCPServer | None = None
+
+    class Handler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            parsed_path = urllib.parse.urlparse(self.path)
+            query_params = urllib.parse.parse_qs(parsed_path.query)
+            code = query_params.get("code", [None])[0]
+            
+            if code:
+                auth_code_holder["code"] = code
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(b"<h1>Authentication successful!</h1><p>You can close this window.</p>")
+            
+            # httpd is guaranteed to be a TCPServer instance when this is called
+            if httpd:
+                threading.Thread(target=httpd.shutdown).start()
+
+    def run_server():
+        nonlocal httpd
+        with socketserver.TCPServer(("", PORT), Handler) as server:
+            httpd = server
+            httpd.serve_forever()
+        print("Server has been shut down.")
+
+    server_thread = threading.Thread(target=run_server)
+    server_thread.daemon = True
+    server_thread.start()
+    print(f"Server started on http://localhost:{PORT}. Waiting for redirect...")
+
+    data = supabase.auth.sign_in_with_oauth({
+        "provider": "google",
+        "options": {"redirect_to": REDIRECT_URI},
+    })
+    webbrowser.open(data.url)
+
+    server_thread.join()
+
+    if auth_code_holder["code"]:
+        print("Authentication code received. Exchanging for session...")
+        try:
+            # Cast the dictionary to the expected type to satisfy Pylance.
+            # The library handles the missing params internally.
+            params = cast(CodeExchangeParams, {"auth_code": auth_code_holder["code"]})
+            session = supabase.auth.exchange_code_for_session(params)
+
+            # *** THE FIX IS HERE ***
+            # Add a check to ensure session.user is not None before accessing it.
+            if session and session.user:
+                print("Session successfully created!")
+                print("User logged in as:", session.user.email)
+
+                with open("supabase_session.json", "w") as f:
+                    f.write(session.model_dump_json())
+            else:
+                # This case is unlikely if the exchange succeeds, but it's safe to handle.
+                print("Login successful, but failed to retrieve user details.")
+                CTkMessagebox(title="Login Warning", message="Could not retrieve user details after login.", icon="warning")
+
+        except Exception as e:
+            print(f"Error exchanging code for session: {e}")
+            CTkMessagebox(title="Login Error", message=str(e), icon="cancel")
+    else:
+        print("Could not get authentication code from redirect.")

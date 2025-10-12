@@ -3,6 +3,7 @@ import threading
 from database_utils import FILENAME
 from main_screen import MainScreen
 from settings_screen import SettingsScreen
+from sign_in import SignInScreen
 from json_utils import load_settings
 from threads import update_running_total_thread, update_weight_thread
 
@@ -31,13 +32,13 @@ class Weighly(ctk.CTk):
         # Dictionary to store frames
         self.frames = {}
 
-        for F in (MainScreen, SettingsScreen):
+        for F in (MainScreen, SettingsScreen, SignInScreen):
             frame = F(self, self)
             name = F.__name__
             self.frames[name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("MainScreen")
+        self.show_frame("SignInScreen")
     
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]

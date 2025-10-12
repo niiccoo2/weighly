@@ -22,7 +22,7 @@
     const res = await fetch("https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/get_allowed_events", {
       method: "POST",
       headers: {
-        apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto",
+        apikey: "sb_publishable_DruCqbBOsfUmleFtZkKtxw_dTjPQwfz",
         Authorization: `Bearer ${session.access_token}`,
         "Content-Type": "application/json"
       },

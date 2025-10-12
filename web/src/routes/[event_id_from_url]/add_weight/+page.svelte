@@ -6,7 +6,7 @@
 
   const eventId = parseInt(params.event_id_from_url);
 
-  let apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pZmpya3hoanJ0d2xyYW5jZGhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjQ4NDUsImV4cCI6MjA3NDY0MDg0NX0.dBUGNaqc6-hcYQzEEUKnwD9gPji6RxqHfRhDeUA6hto";
+  let apikey = "sb_publishable_DruCqbBOsfUmleFtZkKtxw_dTjPQwfz";
 
   let total: number | null = null;
   let save_success = "";

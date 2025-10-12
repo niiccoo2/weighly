@@ -2,6 +2,11 @@ import datetime
 from CTkMessagebox import CTkMessagebox
 from datetime import datetime
 import requests
+from supabase import create_client, Client
+
+SUPABASE_URL = 
+SUPABASE_KEY =
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 FILENAME="./weighly_backup.csv"
 
@@ -104,3 +109,7 @@ def read_running_total(event: int) -> int:
     #             icon="cancel"
     #         )
     #     return 0
+
+def sign_in_supabase():
+    response = supabase.auth.sign_in_with_oauth(
+        {"provider": "github"})

@@ -75,12 +75,12 @@ def save_weight(event: int, name: str, weight: float, person_type: str | None = 
                 message=f"Error: {str(file)}",
                 icon="cancel"
             )
-        if database != 0 and database != "Not attempted": # Means db is not ok
-            CTkMessagebox(
-                title="Error", 
-                message=f"Error: {str(database)}",
-                icon="cancel"
-            )
+        # if database != 0 and database != "Not attempted": # Means db is not ok, comment to stop all the fuc
+        #     CTkMessagebox(
+        #         title="Error", 
+        #         message=f"Error: {str(database)}",
+        #         icon="cancel"
+        #     )
 
 def read_running_total(event: int) -> int:
     """
@@ -88,18 +88,19 @@ def read_running_total(event: int) -> int:
     """
     url = f"http://127.0.0.1:8000/{event}/total"
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
+    return 0
+    # try:
+    #     response = requests.get(url)
+    #     response.raise_for_status()
 
-        data = response.json()
+    #     data = response.json()
         
-        return data
+    #     return data
 
-    except requests.exceptions.RequestException as e:
-        CTkMessagebox(
-                title="Error", 
-                message=f"Error: {e}",
-                icon="cancel"
-            )
-        return 0
+    # except requests.exceptions.RequestException as e:
+    #     CTkMessagebox(
+    #             title="Error", 
+    #             message=f"Error: {e}",
+    #             icon="cancel"
+    #         )
+    #     return 0

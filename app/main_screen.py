@@ -32,7 +32,7 @@ class MainScreen(ctk.CTkFrame):
         #self.name = ctk.StringVar(self)
         #self.weight_TKvar = ctk.StringVar(self)
         #self.saved_weight = ctk.DoubleVar(self) # Might be able to remove this
-        self.person_type = ctk.StringVar(self, "Scout")
+        # self.person_type = ctk.StringVar(self, "Scout")
         self.running_total = ctk.StringVar(self)
         self.raw_weight = 0.0  # Store unrounded weight for precision
 
@@ -51,9 +51,9 @@ class MainScreen(ctk.CTkFrame):
             font=("Helvetica", 60), 
             command=lambda: save_weight(1, # Might want to change this to first run a function that makes sure all the inputs are correct
                                         self.NameEntry.get() if self.settings["keep_name"] else self._clear_name_input(),
-                                        self.get_current_weight(False),
-                                        self.person_type.get()))
+                                        self.get_current_weight(False)))
             # self.name.get() will NOT clear the name
+            # self.person_type.get(), if we want to add type back in
         self.btnSaveToFile.grid(row=4, column=2, columnspan=1, rowspan=3)
 
         self.btnTare = ctk.CTkButton(
@@ -100,29 +100,29 @@ class MainScreen(ctk.CTkFrame):
             placeholder_text="Name")
         self.NameEntry.grid(row=4, column=1, columnspan=1, rowspan=3)
 
-        self.r1 = ctk.CTkRadioButton(
-            self, 
-            text="Scout", 
-            font=("Helvetica", 20), 
-            value="Scout", 
-            variable=self.person_type)
-        self.r1.grid(row=3, column=0, rowspan=1)
+        # self.r1 = ctk.CTkRadioButton(
+        #     self, 
+        #     text="Scout", 
+        #     font=("Helvetica", 20), 
+        #     value="Scout", 
+        #     variable=self.person_type)
+        # self.r1.grid(row=3, column=0, rowspan=1)
 
-        self.r2 = ctk.CTkRadioButton(
-            self, 
-            text="Webelo", 
-            font=("Helvetica", 20), 
-            value="Webelo", 
-            variable=self.person_type)
-        self.r2.grid(row=4, column=0, rowspan=1)
+        # self.r2 = ctk.CTkRadioButton(
+        #     self, 
+        #     text="Webelo", 
+        #     font=("Helvetica", 20), 
+        #     value="Webelo", 
+        #     variable=self.person_type)
+        # self.r2.grid(row=4, column=0, rowspan=1)
 
-        self.r3 = ctk.CTkRadioButton(
-            self, 
-            text="Other", 
-            font=("Helvetica", 20), 
-            value="Other", 
-            variable=self.person_type)
-        self.r3.grid(row=5, column=0, rowspan=1)
+        # self.r3 = ctk.CTkRadioButton(
+        #     self, 
+        #     text="Other", 
+        #     font=("Helvetica", 20), 
+        #     value="Other", 
+        #     variable=self.person_type)
+        # self.r3.grid(row=5, column=0, rowspan=1)
     
     def adjust_font_size(self, event=None):
         new_font_size = max(20, min(int((self.winfo_width() + self.winfo_height()) // 50), 100))
@@ -135,9 +135,9 @@ class MainScreen(ctk.CTkFrame):
             self.running_total_label.configure(font=("Helvetica", new_font_size))
             #self.max_on_scale.configure(font=("Helvetica", int(new_font_size // 1.3)))
             self.NameEntry.configure(font=("Helvetica", new_font_size))
-            self.r1.configure(font=("Helvetica", new_font_size // 2))
-            self.r2.configure(font=("Helvetica", new_font_size // 2))
-            self.r3.configure(font=("Helvetica", new_font_size // 2))
+            # self.r1.configure(font=("Helvetica", new_font_size // 2))
+            # self.r2.configure(font=("Helvetica", new_font_size // 2))
+            # self.r3.configure(font=("Helvetica", new_font_size // 2))
         
     def tare_scale(self):
         self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "x")
@@ -202,7 +202,7 @@ class MainScreen(ctk.CTkFrame):
         if self.settings["scale_mode"]:
             threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
     
-    def get_current_weight(self):
+    def get_current_weight(self, rounded=True) -> float:
         """
         Grabs the weight from the correct location and returns in lbs.
         """

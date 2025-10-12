@@ -6,20 +6,19 @@ import requests
 FILENAME="./weighly_backup.csv"
 
 # Write donation data to a file
-def save_to_file(filename: str, name: str, weight: float, person_type: str):
+def save_to_file(filename: str, name: str, weight: float, person_type: str | None = None):
     """
     Saves name, weight, and type to local CSV.
     Returns 0 for success, otherwise returns the error message.
     """
     try:
         clean_name = name.strip().title()
-        type_display = person_type.strip() # idk why we have this
         weight_to_file = weight
 
         if name != "":
             with open(filename, "a") as hs:
                 current_time = datetime.now()
-                hs.write(f"{clean_name},{type_display},{weight_to_file},{current_time}\n")
+                hs.write(f"{clean_name},{person_type},{weight_to_file},{current_time}\n")
         else:
             return "Name cannot be blank"
         return 0
@@ -27,7 +26,7 @@ def save_to_file(filename: str, name: str, weight: float, person_type: str):
         return str(e)
 
 
-def save_to_database(event: int, name: str, weight: float, person_type: str):
+def save_to_database(event: int, name: str, weight: float, person_type: str | None = None):
     """
     Saves name, weight, and type to weighly backend.
     Returns 0 for success, otherwise the error message.
@@ -53,7 +52,7 @@ def save_to_database(event: int, name: str, weight: float, person_type: str):
     else:
         return "Name cannot be blank"
 
-def save_weight(event: int, name: str, weight: float, person_type: str):
+def save_weight(event: int, name: str, weight: float, person_type: str | None = None):
     """
     Calls both save to database and file at the same time and gives saved or error message.
     """

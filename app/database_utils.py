@@ -140,14 +140,17 @@ def sign_in_supabase():
             if code:
                 auth_code_holder["code"] = code
 
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
+            # Redirect to your website
+            redirect_url = "https://weighly.app/python_sign_in_success"  # <-- change this to your site
+            self.send_response(302)
+            self.send_header("Location", redirect_url)
             self.end_headers()
-            self.wfile.write(b"<h1>Authentication successful!</h1><p>You can close this window.</p>")
             
-            # httpd is guaranteed to be a TCPServer instance when this is called
+            # Stop the server after handling the request
             if httpd:
+                import threading
                 threading.Thread(target=httpd.shutdown).start()
+
 
     def run_server():
         nonlocal httpd
@@ -172,13 +175,9 @@ def sign_in_supabase():
     if auth_code_holder["code"]:
         print("Authentication code received. Exchanging for session...")
         try:
-            # Cast the dictionary to the expected type to satisfy Pylance.
-            # The library handles the missing params internally.
             params = cast(CodeExchangeParams, {"auth_code": auth_code_holder["code"]})
             session = supabase.auth.exchange_code_for_session(params)
 
-            # *** THE FIX IS HERE ***
-            # Add a check to ensure session.user is not None before accessing it.
             if session and session.user:
                 print("Session successfully created!")
                 print("User logged in as:", session.user.email)
@@ -186,7 +185,6 @@ def sign_in_supabase():
                 with open("supabase_session.json", "w") as f:
                     f.write(session.model_dump_json())
             else:
-                # This case is unlikely if the exchange succeeds, but it's safe to handle.
                 print("Login successful, but failed to retrieve user details.")
                 CTkMessagebox(title="Login Warning", message="Could not retrieve user details after login.", icon="warning")
 

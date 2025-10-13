@@ -10,11 +10,12 @@ import json
 from supabase import create_client, Client
 import threading
 from typing import cast
-from gotrue.types import CodeExchangeParams
+from gotrue.types import CodeExchangeParams, AuthResponse
 
 SUPABASE_URL = "https://oifjrkxhjrtwlrancdho.supabase.co"
 SUPABASE_KEY = "sb_publishable_DruCqbBOsfUmleFtZkKtxw_dTjPQwfz"
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+session: AuthResponse | None = None
 
 PORT = 5000
 REDIRECT_URI = f"http://localhost:{PORT}"
@@ -126,6 +127,8 @@ def sign_in_supabase():
     Signs in the user using Google OAuth with Supabase by running a temporary
     HTTP server in a separate thread to handle the redirect.
     """
+    global session
+
     # Add explicit type hints to satisfy the static type checker
     auth_code_holder: dict[str, str | None] = {"code": None}
     server_thread: threading.Thread | None = None
@@ -176,14 +179,16 @@ def sign_in_supabase():
         print("Authentication code received. Exchanging for session...")
         try:
             params = cast(CodeExchangeParams, {"auth_code": auth_code_holder["code"]})
-            session = supabase.auth.exchange_code_for_session(params)
+            session = cast(AuthResponse, supabase.auth.exchange_code_for_session(params))
 
             if session and session.user:
                 print("Session successfully created!")
                 print("User logged in as:", session.user.email)
 
-                with open("supabase_session.json", "w") as f:
-                    f.write(session.model_dump_json())
+                # with open("supabase_session.json", "w") as f:
+                #     f.write(session.model_dump_json())
+                
+                return 0 # Success
             else:
                 print("Login successful, but failed to retrieve user details.")
                 CTkMessagebox(title="Login Warning", message="Could not retrieve user details after login.", icon="warning")
@@ -191,5 +196,26 @@ def sign_in_supabase():
         except Exception as e:
             print(f"Error exchanging code for session: {e}")
             CTkMessagebox(title="Login Error", message=str(e), icon="cancel")
+
+            return str(e) # Return the error message
     else:
         print("Could not get authentication code from redirect.")
+        return "Could not get authentication code from redirect."
+
+def get_allowed_events():
+    """
+    Gets the list of allowed events from the backend.
+    """
+
+    print("Checking allowed events for user...")
+    if session is None or session.user is None:
+        print("No active session. Please sign in first.")
+        return []
+
+    response = (
+        supabase.rpc("get_allowed_events", { "user_id": session.user.id } )    
+        .execute()
+    )
+
+    print("Allowed events response:", response)
+    return response.data if response.data else []

@@ -39,56 +39,46 @@ class EventPicker(ctk.CTkFrame):
         self.label.grid(row=0, column=0, padx=20, pady=20)
 
     def refresh(self):
-        self.events = get_allowed_events()
 
-        formatted = {int(e.get('event_id')): e.get('name', '') for e in self.events}
-        print(f"Formatted events: {formatted}")
+        self.formatted = self._create_formatted_events(get_allowed_events())
+        print(f"\nFormatted events: {self.formatted}")
+
+        # Build a list of names from the formatted event dicts.
+        # Use a list comprehension (not a generator) so `names` is a list of strings.
+        names: list[str] = [str(e.get("name", "")) for e in self.formatted]
+        print(f"\nNames: {names}")
 
         self.event_var = ctk.StringVar(value="") #init ctk var
         self.event_dropdown = ctk.CTkOptionMenu(self,
-            values=list(formatted.values()),
+            values=names,
             command= lambda item: self._load_event(item),
             variable=self.event_var)
         self.event_dropdown.grid(row=1, column=0)
-        # Build safe dict {id: name} and list of (id, name) pairs
-        pairs = []
-        allowed = {}
-        for e in (self.events or []):
-            eid = e.get('event_id')
-            if eid is None:
-                continue
-            try:
-                eid = int(eid)
-            except (TypeError, ValueError):
-                continue
-            name = e.get('name') or ""
-            allowed[eid] = name
-            pairs.append((eid, name))
-
-        self.allowed_events = allowed  # {id: name}
-        print(f"Formatted events: {self.allowed_events}")
-
-        # Build display names for dropdown; disambiguate duplicates by appending (id)
-        from collections import Counter
-        name_counts = Counter(name for _, name in pairs)
-        display_names = []
-        id_list = []
-        for eid, name in pairs:
-            display = f"{name} ({eid})" if name_counts[name] > 1 else name
-            display_names.append(display)
-            id_list.append(eid)
-
-        # Store mapping arrays for lookup
-        self.display_names = display_names
-        self.event_id_list = id_list
-
-        # Create / update OptionMenu
-        self.event_var = ctk.StringVar(value=display_names[0] if display_names else "No events")
-        self.event_dropdown = ctk.CTkOptionMenu(self,
-            values=display_names or ["No events"],
-            command=lambda item: self._load_event(item),
-            variable=self.event_var)
-        self.event_dropdown.grid(row=1, column=0)
+        
     
     def _load_event(self, event):
-        pass
+        # Find event id from name
+        for e in self.formatted:
+            if e.get("name") == event:
+                event_id = int(e.get("event_id", 0))
+                break
+
+        self.controller.event = event_id
+        self.controller.show_frame("MainScreen")
+
+    def _create_formatted_events(self, events) -> list[dict[str, str|int]]:
+        # list[dict[str, Any]]
+
+        formatted = []
+
+        for e in events:
+            event_id = int(e.get('event_id', 0))
+            name = e.get('name', '')
+
+            if any(name.lower() in (i.get('name') or "").lower() for i in formatted): # If name already exists
+                name = name + f" ({event_id})"
+                formatted.append({'event_id': event_id, 'name': name})
+            else:
+                formatted.append({'event_id': event_id, 'name': name})
+
+        return formatted

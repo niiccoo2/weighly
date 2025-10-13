@@ -163,6 +163,8 @@ class MainScreen(ctk.CTkFrame):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
 
+        print(f"Event in MainScreen init: {self.controller.event}")
+
         if hasattr(self, "weight"):
             self.weight.destroy()
         

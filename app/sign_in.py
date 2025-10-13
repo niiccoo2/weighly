@@ -63,7 +63,7 @@ class EventPicker(ctk.CTkFrame):
                 event_id = int(e.get("event_id", 0))
                 break
 
-        self.controller.event = event_id
+        self.controller.event_id = event_id
         self.controller.show_frame("MainScreen")
 
     def _create_formatted_events(self, events) -> list[dict[str, str|int]]:

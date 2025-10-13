@@ -49,7 +49,7 @@ class MainScreen(ctk.CTkFrame):
             self, 
             text="Save To File", 
             font=("Helvetica", 60), 
-            command=lambda: save_weight(1, # Might want to change this to first run a function that makes sure all the inputs are correct
+            command=lambda: save_weight(self.controller.event_id, # Might want to change this to first run a function that makes sure all the inputs are correct
                                         self.NameEntry.get() if self.settings["keep_name"] else self._clear_name_input(),
                                         self.get_current_weight(False)))
             # self.name.get() will NOT clear the name
@@ -163,7 +163,7 @@ class MainScreen(ctk.CTkFrame):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
 
-        print(f"Event in MainScreen init: {self.controller.event}")
+        print(f"Event in MainScreen init: {self.controller.event_id}")
 
         if hasattr(self, "weight"):
             self.weight.destroy()

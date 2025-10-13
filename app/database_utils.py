@@ -43,43 +43,40 @@ def save_to_file(filename: str, name: str, weight: float, person_type: str | Non
         return str(e)
 
 
-def save_to_database(event: int, name: str, weight: float, person_type: str | None = None):
+def save_to_database(event_id: int, name: str, weight: float, person_type: str | None = None):
     """
     Saves name, weight, and type to weighly backend.
     Returns 0 for success, otherwise the error message.
     """
     if name != "":
         try:
-            url = f"http://127.0.0.1:8000/{event}/add_weight"  # This is for local testing
+            if session is None or session.user is None:
+                print("No active session. Please sign in first.")
+                return "No active session. Please sign in first."
 
-            payload = {
-                "name": name,
-                "weight": weight,
-                "type": person_type,
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-
-            headers = {"Content-Type": "application/json"}
-
-            response = requests.post(url, json=payload, headers=headers)
-            response.raise_for_status()  # Raise HTTPError for bad responses
+            response = (
+                supabase.rpc("add_weight", { "p_event_id": event_id, "p_name": name, "p_weight": weight, "p_type": person_type } )    
+                .execute()
+            )
             return 0
         except Exception as e:
             return str(e)
     else:
         return "Name cannot be blank"
 
-def save_weight(event: int, name: str, weight: float, person_type: str | None = None):
+def save_weight(event_id: int, name: str, weight: float, person_type: str | None = None):
     """
     Calls both save to database and file at the same time and gives saved or error message.
     """
+
+    print(f"Saving weight: event_id={event_id}, name={name}, weight={weight}, type={person_type}")
 
     database = "Not attempted"
 
     file = save_to_file(FILENAME, name, weight, person_type)
 
     if file == 0: # Only save to db if it saves to file
-        database = save_to_database(event, name, weight, person_type)
+        database = save_to_database(event_id, name, weight, person_type)
 
     if file == 0 and database == 0: # If they both return 0 for no error
         CTkMessagebox(

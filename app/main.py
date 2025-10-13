@@ -20,7 +20,7 @@ class Weighly(ctk.CTk):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        self.event: int | None = None
+        self.event_id: int | None = None
 
         # Should delete this junk
         # self.SERIALPORT = "/dev/ttyUSB0"

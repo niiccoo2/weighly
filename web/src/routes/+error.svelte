@@ -1,6 +1,7 @@
 <script lang="ts">
   export let error: Error;
   export let status: number;
+  import '$lib/styles_lightmode.css';
 </script>
 
 <svelte:head>

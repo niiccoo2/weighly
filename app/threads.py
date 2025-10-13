@@ -12,7 +12,12 @@ def update_weight_thread(weighly):
     while scale_mode:
         scale_mode = main_screen.settings["scale_mode"]
         # Get the weight from the scale
+        print(f"Reading weight from scale at {main_screen.settings['SERIALPORT']} with baudrate {main_screen.settings['BAUDRATE']}")
         raw_weight = main_screen.get_serial(main_screen.settings["SERIALPORT"], main_screen.settings["BAUDRATE"], "W")
+
+        if not isinstance(raw_weight, float):
+            print("Error reading weight from scale:", raw_weight)
+            raw_weight = 0.0
 
         # Store raw weight for precision (before any rounding or unit conversion)
         main_screen.raw_weight = raw_weight

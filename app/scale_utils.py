@@ -1,58 +1,70 @@
-import serial # pip install pyserial
+import serial
+import time
+import re
+import threading
 from random import uniform
 
-def get_serial(serialport, buadrate, stringToSend):
-    ser = serial.Serial(serialport, buadrate, timeout =1) #Real scale
+# This lock prevents two threads from trying to use the scale at the exact same time,
+# which is the cause of the "PermissionError: Access is denied" error.
+_serial_lock = threading.Lock()
 
-    print("StringToSend = "+stringToSend)
-    weight_string = ""
-    weight = 00.0
-    miliseconds = 0
-    Data_Ready = 0
-    
-    ser.reset_input_buffer()
-    ser.reset_output_buffer()
-    
-    #ser.write(bytearray("W",'ascii'))
-    ser.write(stringToSend.encode('utf-8'))
-    i=0
-    #time.sleep(.1)
-    while (Data_Ready == 0):
-        Data_Ready = ser.in_waiting
-        i=i+1
-        if i>10:
-            print("Scale timeout. [scale_utils.py, line 24 ish]")
-            break
-    
-    input_string =""
-    
-    input_string = ser.readline().decode('utf-8')
-    print (input_string)
-    
-    try:
-        split_input_string = input_string.split(",")
-        print("weight splitting")
-        print (split_input_string[0])
-        print (split_input_string[1])
-        weight_string = split_input_string[0]
-        weight_string = weight_string.rstrip()
-        weight_string = weight_string.rstrip('lbs')
-        
-        print("weight_string = "+ weight_string)
-        weight = float(weight_string)
-        
-        print("weight = "+ str(weight))
-        
-        #miliseconds_string = split_input_string[0].strip()
-        #miliseconds = int(miliseconds_string)
-        
-        print("milliseconds = " + str(miliseconds))
-              
-        return weight
-        
-    except:
-        print("Not Weight Data")
-        print (split_input_string[0])
+def get_serial(port: str, baud: int, command: str = "W", timeout: float = 2.0) -> float | None:
+    """
+    Sends a character to the scale and reads the weight response.
+    This is designed to be robust for your specific SparkFun scale.
+    """
+    # 1. ACQUIRE THE PORT
+    # We use a lock to ensure only one part of your app can talk to the scale at a time.
+    with _serial_lock:
+        try:
+            # This opens the port and guarantees it closes, even if errors happen.
+            with serial.Serial(port, baud, timeout=0.1) as ser:
+
+                # 2. IGNORE THE STARTUP BANNER
+                # Your scale sends a banner ("Serial Load Cell Converter...") on connection.
+                # We must read and discard these lines first, just like you see in PuTTY.
+                time.sleep(0.1)  # Give the banner time to start sending
+                while ser.in_waiting:
+                    ser.readline() # Read and throw away one line of the banner
+
+                # 3. SEND THE COMMAND
+                # Now that the banner is gone, we send the 'W' character.
+                # Your old code didn't use a newline, so we won't either.
+                ser.write(command.encode('ascii'))
+                ser.flush() # Ensure the command is sent immediately
+
+                # 4. READ THE RESPONSE
+                # We now listen for the answer, which looks like "-0.47,lbs,0,".
+                # We loop until we find a line with a valid number or we time out.
+                deadline = time.monotonic() + timeout
+                while time.monotonic() < deadline:
+                    response_bytes = ser.readline()
+                    if not response_bytes:
+                        time.sleep(0.05) # Wait a moment for the response
+                        continue
+
+                    # Decode bytes to text, ignoring any weird characters.
+                    response_text = response_bytes.decode('latin-1', errors='ignore').strip()
+                    print(f"Scale Read: '{response_text}'") # Debug print
+
+                    # Find the first number in the response text.
+                    match = re.search(r"-?\d+\.?\d*", response_text)
+                    if match:
+                        try:
+                            # If we found a number, convert it to a float and return it.
+                            return float(match.group(0))
+                        except (ValueError, TypeError):
+                            # If conversion fails, keep trying.
+                            continue
+                
+                # If the loop finishes without returning, we timed out.
+                print("Scale timeout: No valid weight received.")
+                return None
+
+        except serial.SerialException as e:
+            # This handles errors like "port not found" or "access denied".
+            print(f"Serial communication error: {e}")
+            return None
 
 # Simulated scale data for testing
 def get_serial_dummy(serialport, buadrate, stringToSend):

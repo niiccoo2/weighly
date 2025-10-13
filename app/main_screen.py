@@ -15,7 +15,7 @@ class MainScreen(ctk.CTkFrame):
         self.settings = load_settings()
 
         self.current_font_size = 0
-        self.use_dummy_scale = True # Remove this once the ability to enter weight is added
+        self.use_dummy_scale = False # Remove this once the ability to enter weight is added
 
         if self.use_dummy_scale:
             self.get_serial = get_serial_dummy

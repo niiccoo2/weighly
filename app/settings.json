@@ -1,5 +1,5 @@
 {
-    "SERIALPORT": "COM1",
+    "SERIALPORT": "COM4",
     "BAUDRATE": "9600",
     "theme": "dark-blue",
     "scale_mode": true,

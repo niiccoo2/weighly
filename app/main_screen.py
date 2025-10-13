@@ -140,11 +140,10 @@ class MainScreen(ctk.CTkFrame):
             # self.r3.configure(font=("Helvetica", new_font_size // 2))
         
     def tare_scale(self):
-        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "x")
-        
-        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "1")
-        
-        self.get_serial(self.settings["SERIALPORT"], self.settings["BAUDRATE"], "x")
+        ser = self.controller.serial_connection
+        get_serial(ser, "x")
+        get_serial(ser, "1")
+        get_serial(ser, "x")
     
     def _clear_name_input(self):
         name = self.NameEntry.get()
@@ -162,6 +161,8 @@ class MainScreen(ctk.CTkFrame):
     def reload(self):
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
+
+        self.controller.connect_to_scale()
 
         print(f"Event in MainScreen init: {self.controller.event_id}")
 

@@ -1,39 +1,48 @@
-import serial
 import time
 import re
-import threading
 from random import uniform
 
-def get_serial(serialport, baudrate, StringToSend):
-    print("StringToSend =", StringToSend)
-    ser = serial.Serial(serialport, baudrate, timeout=1)
-    ser.reset_input_buffer()
-    ser.reset_output_buffer()
-    ser.write(StringToSend.encode('utf-8'))
+def get_serial(ser, StringToSend):
+    """
+    Sends a command and reads the response from an *already-open* serial port.
+    """
+    # 1. Check if the connection is valid
+    if not ser or not ser.is_open:
+        # This is not an error, just means the scale is not connected.
+        return None
 
-    start_time = time.time()
+    try:
+        # 2. Send the command
+        command_to_send = StringToSend + '\r\n'
+        ser.reset_input_buffer() # Clear old data
+        ser.write(command_to_send.encode('utf-8'))
+        ser.flush()
 
-    while True:
-        if ser.in_waiting > 0:
+        # 3. Read the response
+        deadline = time.time() + 2.0 # 2-second timeout
+
+        while time.time() < deadline:
             input_line = ser.readline().decode('utf-8', errors='ignore').strip()
+            if not input_line:
+                continue # Ignore empty lines
+
             print(f"Serial line from scale: {input_line}")
 
-            # Match something like "-2.14,lbs,0,"
             if re.match(r"^-?\d+(\.\d+)?,lbs,", input_line):
                 parts = input_line.split(",")
                 try:
                     weight = float(parts[0])
                     print("Weight =", weight)
-                    ser.close()
                     return weight
-                except ValueError:
-                    print("Couldn't parse weight number:", parts[0])
+                except (ValueError, IndexError):
+                    continue
         
-        # prevent infinite loop if no data
-        if time.time() - start_time > 5:
-            print("Timeout waiting for valid data")
-            ser.close()
-            return None
+        print("Timeout: No valid weight line received.")
+        return None
+
+    except ser.SerialException as e:
+        print(f"Serial Error during read/write: {e}")
+        return None
 
 # Simulated scale data for testing
 def get_serial_dummy(serialport, buadrate, stringToSend):

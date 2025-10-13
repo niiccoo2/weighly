@@ -1,5 +1,7 @@
 import customtkinter as ctk
 import threading
+import serial
+import time
 from database_utils import FILENAME
 from main_screen import MainScreen
 from settings_screen import SettingsScreen
@@ -11,6 +13,8 @@ class Weighly(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.settings = load_settings()
+        self.serial_connection: serial.Serial | None = None
+        self.event_id: int | None = None
 
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme(self.settings["theme"])
@@ -19,16 +23,6 @@ class Weighly(ctk.CTk):
         self.resizable(True, True)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-
-        self.event_id: int | None = None
-
-        # Should delete this junk
-        # self.SERIALPORT = "/dev/ttyUSB0"
-        # self.BAUDRATE = 9600 # Not needed when reading from settings
-
-        # self.SERIALPORT = self.settings["SERIALPORT"] # I don't think we ever use this
-        # self.BAUDRATE = self.settings["BAUDRATE"]     # 90% sure we always read stright from settings
-
 
         open(FILENAME, "a")  # make sure file exists
 
@@ -42,6 +36,35 @@ class Weighly(ctk.CTk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("SignInScreen")
+        self.connect_to_scale()
+
+    def connect_to_scale(self):
+        """Opens or re-opens the serial port based on current settings."""
+        if self.serial_connection and self.serial_connection.is_open:
+            self.serial_connection.close()
+
+        if not self.settings.get("scale_mode"):
+            print("Scale mode is disabled.")
+            self.serial_connection = None
+            return
+
+        port = self.settings.get("SERIALPORT")
+        baud = self.settings.get("BAUDRATE", 9600)
+        try:
+            print(f"Attempting to connect to scale at {port}...")
+            self.serial_connection = serial.Serial(port, int(baud), timeout=0.5)
+            time.sleep(0.1)  # Give port time to initialize
+            print("Scale connected successfully.")
+        except (serial.SerialException, ValueError) as e:
+            print(f"Failed to connect to scale: {e}")
+            self.serial_connection = None
+
+    def on_closing(self):
+        """Cleanly close the serial port when the app exits."""
+        if self.serial_connection and self.serial_connection.is_open:
+            print("Closing serial port.")
+            self.serial_connection.close()
+        self.destroy()
     
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
@@ -57,6 +80,7 @@ class Weighly(ctk.CTk):
 
 if __name__ == "__main__":
     weighly = Weighly()
+    weighly.protocol("WM_DELETE_WINDOW", weighly.on_closing)
 
     threading.Thread(target= lambda: update_weight_thread(weighly), daemon=True).start()
     threading.Thread(target= lambda: update_running_total_thread(weighly), daemon=True).start()

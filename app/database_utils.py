@@ -96,28 +96,30 @@ def save_weight(event_id: int, name: str, weight: float, person_type: str | None
         #         icon="cancel"
         #     )
 
-def read_running_total(event: int) -> int:
+def read_running_total(event_id: int) -> int:
     """
     Reads the running total for an event from database.
     """
-    url = f"http://127.0.0.1:8000/{event}/total"
 
-    return 0
-    # try:
-    #     response = requests.get(url)
-    #     response.raise_for_status()
+    try:
+        response = (
+            supabase.rpc("get_total", { "event_id": event_id } )    
+            .execute()
+        )
 
-    #     data = response.json()
-        
-    #     return data
+        print(f"Running total response for event {event_id}:", response)
 
-    # except requests.exceptions.RequestException as e:
-    #     CTkMessagebox(
-    #             title="Error", 
-    #             message=f"Error: {e}",
-    #             icon="cancel"
-    #         )
-    #     return 0
+        total: int = getattr(response, "data", 0)
+
+        return total
+
+    except requests.exceptions.RequestException as e:
+        CTkMessagebox(
+                title="Error", 
+                message=f"Error: {e}",
+                icon="cancel"
+            )
+        return 0
 
 def sign_in_supabase():
     """

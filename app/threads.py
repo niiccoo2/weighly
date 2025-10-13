@@ -48,8 +48,8 @@ def update_weight_thread(weighly):
 def update_running_total_thread(weighly):
     while True:
         try:
-            total = read_running_total(1)
+            total = read_running_total(weighly.event_id)  # Use the event_id from the main application
             weighly.frames["MainScreen"].after(0, lambda: weighly.frames["MainScreen"].running_total.set(str(round(total, 2))))
         except Exception as e:
             print("Error updating total:", e)
-        time.sleep(10)
+        time.sleep(5)

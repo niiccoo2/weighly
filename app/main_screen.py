@@ -141,9 +141,10 @@ class MainScreen(ctk.CTkFrame):
         
     def tare_scale(self):
         ser = self.controller.serial_connection
-        get_serial(ser, "x")
-        get_serial(ser, "1")
-        get_serial(ser, "x")
+        lock = self.controller.serial_lock
+        get_serial(ser, lock, "x")
+        get_serial(ser, lock, "1")
+        get_serial(ser, lock, "x")
     
     def _clear_name_input(self):
         name = self.NameEntry.get()
@@ -159,12 +160,25 @@ class MainScreen(ctk.CTkFrame):
         return new_value.isdigit()
     
     def reload(self):
+        """Reloads settings and conditionally reconnects to the scale."""
+        old_port = self.settings.get("SERIALPORT")
+        old_baud = self.settings.get("BAUDRATE")
+
         self.settings = load_settings()
         print("Reloaded settings:", self.settings)
 
-        self.controller.connect_to_scale()
+        new_port = self.settings.get("SERIALPORT")
+        new_baud = self.settings.get("BAUDRATE")
 
-        print(f"Event in MainScreen init: {self.controller.event_id}")
+        # Only reconnect if the port or baudrate has actually changed.
+        # This is the key to preventing the race condition.
+        if old_port != new_port or old_baud != new_baud:
+            print("Scale settings changed. Reconnecting...")
+            self.controller.connect_to_scale()
+        else:
+            print("Scale settings unchanged. Skipping reconnect.")
+
+        print(f"Event in MainScreen reload: {self.controller.event_id}")
 
         if hasattr(self, "weight"):
             self.weight.destroy()

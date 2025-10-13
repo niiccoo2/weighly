@@ -13,7 +13,8 @@ def update_weight_thread(weighly):
             time.sleep(1)
             continue
 
-        raw_weight = get_serial(weighly.serial_connection, "W")
+        # Pass the lock to get_serial
+        raw_weight = get_serial(weighly.serial_connection, weighly.serial_lock, "W")
 
         if not isinstance(raw_weight, float):
             raw_weight = 0.0

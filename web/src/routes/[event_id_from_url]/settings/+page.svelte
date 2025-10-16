@@ -2,8 +2,14 @@
   import { onMount } from 'svelte';
   import '$lib/styles_lightmode.css';
   import { supabase } from '$lib/supabaseClient';
+  
   export let data: { eventId: number };
+  console.log("Page component - received data:", data);
+  console.log("Page component - eventId:", data.eventId);
+  console.log("Page component - eventId type:", typeof data.eventId);
+  
   const { eventId } = data;
+  console.log("Page component - destructured eventId:", eventId);
 
   async function addUserToEvent(event_id: string, email: string) {
     console.log("Sending POST request for new event");
@@ -235,7 +241,7 @@
       }}
   
   let event_users: any[] = [];
-  export let custom_url_value = '';
+  let custom_url_value = '';
   let loading_users = true;
   
   onMount(async () => {
@@ -244,15 +250,15 @@
     loading_users = false;
   });
   
-  export let save_success = '';
-  export let email_id = 'email';
-  export let email_value = '';
-  export let email_error = '';
+  let save_success = '';
+  let email_id = 'email';
+  let email_value = '';
+  let email_error = '';
 
-  export let custom_url_id = 'custom_url';
-  export let custom_url_textbox_value = '';
-  export let custom_url_error = '';
-  export let custom_url_success = '';
+  let custom_url_id = 'custom_url';
+  let custom_url_textbox_value = '';
+  let custom_url_error = '';
+  let custom_url_success = '';
 
 </script>
 
@@ -312,9 +318,11 @@
     <div class="flex flex-col items-center space-y-1">
       <p class="text-2xl font-semibold text-center">Custom URL</p>
       <p class="text-center text-sm">Set a custom slug for your event.</p>
-
-      <a class="text-lg font-semibold text-center hover:underline w-full block cursor-pointer mt-2" href="https://weighly.app/{custom_url_value}">weighly.app/{custom_url_value}</a>
-
+      {#if custom_url_value != "0"}
+        <a class="text-lg font-semibold text-center hover:underline w-full block cursor-pointer mt-2" href="https://weighly.app/{custom_url_value}">weighly.app/{custom_url_value}</a>
+      {:else}
+        <a class="text-lg font-semibold text-center hover:underline w-full block cursor-pointer mt-2" href="https://weighly.app/{eventId}">weighly.app/{eventId}</a>
+      {/if}
 
       <input
         id={custom_url_id}

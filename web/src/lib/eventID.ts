@@ -1,8 +1,8 @@
-import { supabase } from '$lib/supabaseClient';
+// import { supabase } from '$lib/supabaseClient';
 
 async function getEventIdFromDB(event_string: string): Promise<number | null> {
   console.log("Sending POST request for custom URL lookup:", event_string);
-  const { data: { session } } = await supabase.auth.getSession();
+//   const { data: { session } } = await supabase.auth.getSession();
 
   const res = await fetch("https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/get_event_id_by_custom_url", {
     method: "POST",
@@ -33,15 +33,18 @@ async function getEventIdFromDB(event_string: string): Promise<number | null> {
   return null;
 }
 
-export async function getEventId(event_string: string): Promise<number | null> {
+export async function getEventId(event_string: string | number): Promise<number | null> {
   console.log("Fetching event ID for:", event_string);
-  
+
+  // Convert to string for regex and parsing
+  const str = String(event_string);
+
   // If it's a number, return it immediately
-  if (!isNaN(parseInt(event_string)) && /^\d+$/.test(event_string)) {
-    console.log("Event ID is a number:", event_string);
-    return parseInt(event_string);
+  if (!isNaN(parseInt(str)) && /^\d+$/.test(str)) {
+    console.log("Event ID is a number:", str);
+    return parseInt(str);
   }
-  
+
   // Otherwise look it up in the DB
-  return await getEventIdFromDB(event_string);
+  return await getEventIdFromDB(str);
 }

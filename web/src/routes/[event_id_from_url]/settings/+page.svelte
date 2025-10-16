@@ -118,6 +118,7 @@
 </svelte:head>
 
 <main class="flex flex-col items-center mt-8 w-full max-w-4xl mx-auto">
+  <!-- Users -->
   <div class="w-full max-w-md p-4 card rounded-xl shadow-lg">
     <div class="flex flex-col items-center space-y-1">
       <p class="text-2xl font-semibold text-center">Users</p>
@@ -163,6 +164,39 @@
     </div>
   </div>
 
+  <!-- Custom URL -->
+   <div class="w-full max-w-md p-4 card rounded-xl shadow-lg mt-8">
+    <div class="flex flex-col items-center space-y-1">
+      <p class="text-2xl font-semibold text-center">Custom URL</p>
+      <p class="text-center text-sm">Set a custom slug for your event.</p>
+
+      <p class="text-lg font-semibold text-center hover:underline w-full block cursor-pointer mt-2">test</p>
+
+
+      <input
+        id={email_id}
+        bind:value={email_value}
+        placeholder="Email"
+        class="w-full rounded textbox focus:outline-none text-2xl thick_text px-2 py-1 mt-4"
+        aria-invalid={email_error ? "true" : "false"}
+        aria-describedby={email_error ? email_id + "-err" : undefined}
+      />
+      {#if email_error}
+        <p id={email_id + "-err"} class="text-sm text-red-600 mt-1">{email_error}</p>
+      {/if}
+      {#if save_success}
+        <p class="text-green-600 mt-2">{save_success}</p>
+      {/if}
+
+      <button 
+      on:click={() => addUserToEvent(String(eventId), email_value)}
+      class="accent_color_button rounded hover:scale-105 px-4 py-2 transition-transform cursor-pointer w-full mt-4 text-2xl">
+      Add User
+      </button>
+    </div>
+  </div>
+
+  <!-- Save Weights Link -->
   <div class="w-full max-w-md p-4 card rounded-xl shadow-lg mt-8">
     <div class="flex flex-col items-center space-y-1">
       <p class="text-2xl font-semibold text-center">Save Weights</p>

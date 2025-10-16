@@ -1,9 +1,11 @@
 import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { getEventId } from '$lib/eventID';
 
 export const load: PageLoad = async ({ params, fetch }) => {
   // Convert the route parameter to a number
-  const eventId = parseInt(params.event_id_from_url);
+  const eventId = await getEventId(params.event_id_from_url);
+
   console.log("Fetching leaderboard…");
 		
   const res = await fetch("https://oifjrkxhjrtwlrancdho.supabase.co/rest/v1/rpc/get_summary", {

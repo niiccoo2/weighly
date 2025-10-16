@@ -114,9 +114,9 @@
     <p class="text-xl font-semibold text-center">{pageTitle}:</p>
 
     {#if allowedToSave}
-	  <a href="/{eventInfo.event_id}/add_weight"
+	  <a href="/{eventInfo.event_id}/settings"
          class="absolute right-4 top-0 accent_color_button rounded px-4 py-2 hover:scale-105 transition-transform cursor-pointer">
-        Save Weights
+        Settings
       </a>
     {/if}
   </div>

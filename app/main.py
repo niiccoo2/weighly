@@ -17,6 +17,11 @@ class Weighly(ctk.CTk):
         self.serial_connection: serial.Serial | None = None
         self.serial_lock = threading.Lock()  # Lock to protect serial access
         self.event_id: int | None = None
+        
+        # --- Solution: Add thread control events ---
+        self.weight_thread_active = threading.Event() # Controls the weight thread
+        self.total_thread_active = threading.Event()  # Controls the total thread
+
 
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme(self.settings["theme"])
@@ -64,6 +69,10 @@ class Weighly(ctk.CTk):
 
     def on_closing(self):
         """Cleanly close the serial port when the app exits."""
+        # --- Solution: Stop threads gracefully ---
+        self.weight_thread_active.clear()
+        self.total_thread_active.clear()
+
         if self.serial_connection and self.serial_connection.is_open:
             print("Closing serial port.")
             self.serial_connection.close()
@@ -72,10 +81,18 @@ class Weighly(ctk.CTk):
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
 
-        # reload settings if returning to MainScreen
+        # --- Solution: Control thread activity based on the visible frame ---
         if frame_name == "MainScreen":
+            # Activate threads for the main screen
+            self.weight_thread_active.set()
+            self.total_thread_active.set()
             frame.reload()
-        elif frame_name == "EventPicker":
+        else:
+            # Deactivate threads when not on the main screen
+            self.weight_thread_active.clear()
+            self.total_thread_active.clear()
+
+        if frame_name == "EventPicker":
             # Refresh the event list when showing the picker
             frame.refresh()
 
@@ -86,6 +103,7 @@ if __name__ == "__main__":
     weighly = Weighly()
     weighly.protocol("WM_DELETE_WINDOW", weighly.on_closing)
 
+    # --- Solution: Start a SINGLE, controllable thread at the beginning ---
     threading.Thread(target=lambda: update_weight_thread(weighly), daemon=True).start()
     threading.Thread(
         target=lambda: update_running_total_thread(weighly), daemon=True

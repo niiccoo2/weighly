@@ -216,8 +216,8 @@ class MainScreen(ctk.CTkFrame):
         self.adjust_font_size()
 
         # Restart scale update thread if scale_mode
-        if self.settings["scale_mode"]:
-            threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
+        # if self.settings["scale_mode"]:
+        #     threading.Thread(target= lambda: update_weight_thread(self.controller), daemon=True).start()
     
     def get_current_weight(self, rounded=True) -> float:
         """

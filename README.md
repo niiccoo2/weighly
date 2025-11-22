@@ -16,3 +16,7 @@ Features to be added:
 - more uniform code
 
 Weighly uses supabase for backend and the svelte site is hosted on vercel.
+
+### Run from source
+`pip install -r requirements.txt`
+`python3 ./main.py`

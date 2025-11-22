@@ -1,14 +1,24 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import '$lib/styles_lightmode.css';
-	import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
+  import { invalidateAll } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	export let data;
 
 	let apikey = "sb_publishable_DruCqbBOsfUmleFtZkKtxw_dTjPQwfz";
 
 	let eventInfo = data.eventInfo;
-	let totals = data.totals ?? [];
+  let totals = data.totals ?? [];
+
+  // Keep local `totals` and `leaderboard` in sync when `data` changes
+  $: if (data) {
+    // update eventInfo in case it changed
+    eventInfo = data.eventInfo;
+    // update totals and rebuild leaderboard when load data updates
+    totals = data.totals ?? [];
+    getLeaderboard();
+  }
 
 	let leaderboard: any[] = [{ "rank": "???", "name": "Loading...", "category": "Leaderboard Fall back", "score_lbs": 0 }];
 	let kg_mode: string = "lbs";
@@ -42,8 +52,24 @@
 	}
 
 	onMount(() => {
-		getLeaderboard();
-		console.log("Fetched leaderboard:", leaderboard);
+    getLeaderboard();
+    console.log("Fetched leaderboard:", leaderboard);
+
+    // Poll every 10 seconds to refresh data from the server
+    const interval = setInterval(async () => {
+      // Preferred: use SvelteKit invalidate to re-run the page's load function
+      try {
+        await invalidateAll();
+        // after invalidate, `data` and `totals` will be updated by the framework
+        // re-run the leaderboard transform in case `totals` changed
+        await getLeaderboard();
+      } catch (err) {
+        console.error('Error invalidating page data:', err);
+      }
+    }, 10000);
+
+    // make interval accessible for cleanup
+    onDestroy(() => clearInterval(interval));
 	});
 
 	function toggleUnits() {
